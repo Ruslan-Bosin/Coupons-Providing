@@ -1,8 +1,9 @@
-from app import app
+from app import app, logger
 from jinja2 import Environment, FileSystemLoader
 from os import path as os_path
 
 
+@logger.catch
 @app.template_filter("style")
 def style(style_path, data_css=None):
 
@@ -19,6 +20,7 @@ def style(style_path, data_css=None):
     return template.render(data_css)
 
 
+@logger.catch
 @app.template_filter("script")
 def script(script_path, data_js=None):
 
