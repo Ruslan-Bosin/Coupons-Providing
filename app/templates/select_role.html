@@ -9,10 +9,10 @@
     <style>
         {% if data_css %}
         {{ ui_kit_styles_url | style(data_css) | safe }}
-        {{ index_styles_url | style(data_css) | safe }}
+        {{ select_role_styles_url | style(data_css) | safe }}
         {% else %}
         {{ ui_kit_styles_url | style() | safe }}
-        {{ index_styles_url | style() | safe }}
+        {{ select_role_styles_url | style() | safe }}
         {% endif %}
     </style>
 </head>

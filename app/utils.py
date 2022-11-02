@@ -17,3 +17,19 @@ def style(style_path, data_css=None):
     if data_css is None:
         return template.render()
     return template.render(data_css)
+
+
+@app.template_filter("script")
+def script(script_path, data_js=None):
+
+    absolute_path = (os_path.abspath(__file__).replace(f"\\{os_path.basename(__file__)}", '') + script_path)\
+        .replace("/", "\\")
+    path, filename = os_path.split(absolute_path)
+
+    file_loader = FileSystemLoader(path)
+    environment = Environment(loader=file_loader)
+    template = environment.get_template(filename)
+
+    if data_js is None:
+        return template.render()
+    return template.render(data_js)

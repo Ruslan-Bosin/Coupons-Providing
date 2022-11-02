@@ -15,6 +15,10 @@
         {{ index_styles_url | style() | safe }}
         {% endif %}
     </style>
+    <script>
+        {% if data_js %}
+        {{ ui_kit_styles_url | style(data_js) | safe }}
+    </script>
 </head>
 <body>
 <h1>Главная страница</h1>
