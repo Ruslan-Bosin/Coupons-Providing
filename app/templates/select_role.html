@@ -15,6 +15,13 @@
         {{ select_role_styles_url | style() | safe }}
         {% endif %}
     </style>
+    <script>
+        {% if data_js %}
+        {{ select_role_script_url | script(data_js) | safe }}
+        {% else %}
+        {{ select_role_script_url | script() | safe }}
+        {% endif %}
+    </script>
 </head>
 <body>
 <h1>Кто вы ?</h1>

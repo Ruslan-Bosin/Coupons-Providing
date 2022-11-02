@@ -15,6 +15,13 @@
         {{ organization_signup_styles_url | style() | safe }}
         {% endif %}
     </style>
+    <script>
+        {% if data_js %}
+        {{ organization_signup_script | script(data_js) | safe }}
+        {% else %}
+        {{ organization_signup_script | script() | safe }}
+        {% endif %}
+    </script>
 </head>
 <body>
 <h1>Регистрация - организация</h1>

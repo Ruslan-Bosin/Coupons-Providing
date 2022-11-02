@@ -15,6 +15,13 @@
         {{ client_login_styles_url | style() | safe }}
         {% endif %}
     </style>
+    <script>
+        {% if data_js %}
+        {{ client_login_script_url | script(data_js) | safe }}
+        {% else %}
+        {{ client_login_script_url | script() | safe }}
+        {% endif %}
+    </script>
 </head>
 <body>
 <h1>Вход - клиент</h1>

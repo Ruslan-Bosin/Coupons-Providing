@@ -13,6 +13,7 @@ def index() -> str:
         "select_role_url": url_for("select_role"),
         "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
         "index_styles_url": url_for("static", filename="css/index_styles.css"),
+        "index_script_url": url_for("static", filename="js/index_script.js"),
     }
     return render_template("index.html", **data)
 
@@ -27,7 +28,8 @@ def select_role() -> str:
         "client_login_url": url_for("client_login"),
         "organization_login_url": url_for("organization_login"),
         "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
-        "select_role_styles_url": url_for("static", filename="css/select_role.css"),
+        "select_role_styles_url": url_for("static", filename="css/select_role_styles.css"),
+        "select_role_script_url": url_for("static", filename="js/select_role_script.js"),
     }
     return render_template("select_role.html", **data_html)
 
@@ -41,7 +43,8 @@ def client_login() -> str:
         "select_role_url": url_for("select_role"),
         "client_signup_url": url_for("client_signup"),
         "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
-        "client_login_styles_url": url_for("static", filename="css/client_login.css"),
+        "client_login_styles_url": url_for("static", filename="css/client_login_styles.css"),
+        "client_login_script_url": url_for("static", filename="js/client_login_script.js"),
     }
     return render_template("client_login.html", **data)
 
@@ -55,7 +58,8 @@ def client_signup() -> str:
         "select_role_url": url_for("select_role"),
         "client_login_url": url_for("client_login"),
         "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
-        "client_signup_styles_url": url_for("static", filename="css/client_signup.css"),
+        "client_signup_styles_url": url_for("static", filename="css/client_signup_styles.css"),
+        "client_signup_script_url": url_for("static", filename="js/client_signup_script.js"),
     }
     return render_template("client_signup.html", **data)
 
@@ -69,7 +73,8 @@ def organization_login() -> str:
         "select_role_url": url_for("select_role"),
         "organization_signup_url": url_for("organization_signup"),
         "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
-        "organization_login_styles_url": url_for("static", filename="css/organization_login.css"),
+        "organization_login_styles_url": url_for("static", filename="css/organization_login_styles.css"),
+        "organization_login_script_url": url_for("static", filename="js/organization_login_script.js"),
     }
     return render_template("organization_login.html", **data)
 
@@ -83,7 +88,8 @@ def organization_signup() -> str:
         "select_role_url": url_for("select_role"),
         "organization_login_url": url_for("organization_login"),
         "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
-        "organization_signup_styles_url": url_for("static", filename="css/organization_signup.css"),
+        "organization_signup_styles_url": url_for("static", filename="css/organization_signup_styles.css"),
+        "organization_signup_script_url": url_for("static", filename="js/organization_signup_script.js"),
     }
     return render_template("organization_signup.html", **data)
 

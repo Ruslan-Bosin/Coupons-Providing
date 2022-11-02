@@ -17,7 +17,10 @@
     </style>
     <script>
         {% if data_js %}
-        {{ ui_kit_styles_url | style(data_js) | safe }}
+        {{ index_script_url | script(data_js) | safe }}
+        {% else %}
+        {{ index_script_url | script() | safe }}
+        {% endif %}
     </script>
 </head>
 <body>
