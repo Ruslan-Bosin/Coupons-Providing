@@ -1,6 +1,7 @@
-from flask import Flask
+from flask import Flask, render_template
 from loguru import logger
 from config import LOG_NAME, LOG_ROTATION
+
 
 # Создание основного web приложения
 app: Flask = Flask(__name__)

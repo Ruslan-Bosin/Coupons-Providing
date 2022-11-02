@@ -1,6 +1,6 @@
 from app import app, logger
 from flask import render_template, url_for
-# from app.utils import style
+from app.utils import style
 
 
 # Отслеживание URL
