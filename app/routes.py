@@ -13,6 +13,7 @@ def index() -> str:
         "select_role_url": url_for("select_role"),
         "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
         "index_styles_url": url_for("static", filename="css/index_styles.css"),
+        "data_css": {"background": "black"}
     }
     return render_template("index.html", **data)
 
@@ -21,13 +22,13 @@ def index() -> str:
 @logger.catch
 @app.route("/select_role")
 def select_role() -> str:
-    data: [str, object] = {
+    data_html: [str, object] = {
         "title": "Выберите кто вы",
         "index_url": url_for("index"),
         "client_login_url": url_for("client_login"),
         "organization_login_url": url_for("organization_login")
     }
-    return render_template("select_role.html", **data)
+    return render_template("select_role.html", **data_html)
 
 
 # Клиент - вход

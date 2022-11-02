@@ -1,6 +1,5 @@
 H1 {
   color: white;
-  background: black;
+  background: {{ background }};
   text-align: left;
-  {{ a }}
 }
