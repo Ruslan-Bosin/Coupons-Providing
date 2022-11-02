@@ -1,19 +1,24 @@
 from app import app, logger
 from flask import render_template, url_for
+# from app.utils import style
 
 
 # Отслеживание URL
 # Ознакомительная страница
+@logger.catch
 @app.route("/")
 def index() -> str:
     data: [str, object] = {
         "title": "Главная страница",
-        "select_role_url": url_for("select_role")
+        "select_role_url": url_for("select_role"),
+        "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
+        "index_styles_url": url_for("static", filename="css/index_styles.css"),
     }
     return render_template("index.html", **data)
 
 
 # Выбор роли: клиент / организация
+@logger.catch
 @app.route("/select_role")
 def select_role() -> str:
     data: [str, object] = {
@@ -26,6 +31,7 @@ def select_role() -> str:
 
 
 # Клиент - вход
+@logger.catch
 @app.route("/client/login")
 def client_login() -> str:
     data: [str, object] = {
@@ -37,6 +43,7 @@ def client_login() -> str:
 
 
 # Клиент - регистрация
+@logger.catch
 @app.route("/client/signup")
 def client_signup() -> str:
     data: [str, object] = {
@@ -48,6 +55,7 @@ def client_signup() -> str:
 
 
 # Организация - вход
+@logger.catch
 @app.route("/organization/login")
 def organization_login() -> str:
     data: [str, object] = {
@@ -59,6 +67,7 @@ def organization_login() -> str:
 
 
 # Организация - регистрация
+@logger.catch
 @app.route("/organization/signup")
 def organization_signup() -> str:
     data: [str, object] = {
@@ -70,6 +79,7 @@ def organization_signup() -> str:
 
 
 # Отслеживание ошибок
+@logger.catch
 @app.errorhandler(404)
 def page_not_found_error(error_message):
     logger.info(error_message)
