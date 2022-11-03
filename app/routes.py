@@ -1,5 +1,6 @@
 from app import app, logger
 from flask import render_template, url_for
+from app.forms import ClientLoginForm
 from app.utils import style
 
 
@@ -36,8 +37,15 @@ def select_role() -> str:
 
 # Клиент - вход
 @logger.catch
-@app.route("/client/login")
+@app.route("/client/login", methods=["POST", "GET"])
 def client_login() -> str:
+    form = ClientLoginForm()
+
+    if form.validate_on_submit():
+        email = form.email.data
+        password = form.password.data
+
+
     data: [str, object] = {
         "title": "Вход - клиент",
         "select_role_url": url_for("select_role"),
@@ -45,6 +53,7 @@ def client_login() -> str:
         "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
         "client_login_styles_url": url_for("static", filename="css/client_login_styles.css"),
         "client_login_script_url": url_for("static", filename="js/client_login_script.js"),
+        "form": form,
     }
     return render_template("client_login.html", **data)
 
@@ -62,6 +71,19 @@ def client_signup() -> str:
         "client_signup_script_url": url_for("static", filename="js/client_signup_script.js"),
     }
     return render_template("client_signup.html", **data)
+
+
+# Основная страница - клиент
+@logger.catch
+@app.route("/client")
+def client() -> str:
+    data: [str, object] = {
+        "title": "Клиент",
+        "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
+        "client_styles_url": url_for("static", filename="css/client_styles.css"),
+        "client_script_url": url_for("static", filename="js/client_script.js"),
+    }
+    return render_template("client.html", **data)
 
 
 # Организация - вход

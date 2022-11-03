@@ -9,30 +9,22 @@
     <style>
         {% if data_css %}
         {{ ui_kit_styles_url | style(data_css) | safe }}
-        {{ client_login_styles_url | style(data_css) | safe }}
+        {{ client_styles_url | style(data_css) | safe }}
         {% else %}
         {{ ui_kit_styles_url | style() | safe }}
-        {{ client_login_styles_url | style() | safe }}
+        {{ client_styles_url | style() | safe }}
         {% endif %}
     </style>
     <script>
         {% if data_js %}
-        {{ client_login_script_url | script(data_js) | safe }}
+        {{ client_script_url | script(data_js) | safe }}
         {% else %}
-        {{ client_login_script_url | script() | safe }}
+        {{ client_script_url | script() | safe }}
         {% endif %}
     </script>
 </head>
 <body>
-<h1>Вход - клиент</h1>
-<a href="{{ select_role_url }}">К выбору</a>
-<a href="{{ client_signup_url }}">Регистрация</a>
-<form method="post">
-    {{ form.hidden_tag() }}
-    {{ form.email(class="") }}
-    {{ form.password(class="") }}
-    {{ form.submit(class="") }}
-</form>
-<p></p>
+<h1>Клиент</h1>
+
 </body>
 </html>
