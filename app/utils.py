@@ -7,8 +7,7 @@ from os import path as os_path
 @app.template_filter("style")
 def style(style_path, data_css=None):
 
-    absolute_path = (os_path.abspath(__file__).replace(f"\\{os_path.basename(__file__)}", '') + style_path)\
-        .replace("/", "\\")
+    absolute_path = app.root_path + os_path.normpath(style_path)
     path, filename = os_path.split(absolute_path)
 
     file_loader = FileSystemLoader(path)
@@ -24,8 +23,7 @@ def style(style_path, data_css=None):
 @app.template_filter("script")
 def script(script_path, data_js=None):
 
-    absolute_path = (os_path.abspath(__file__).replace(f"\\{os_path.basename(__file__)}", '') + script_path)\
-        .replace("/", "\\")
+    absolute_path = app.root_path + os_path.normpath(script_path)
     path, filename = os_path.split(absolute_path)
 
     file_loader = FileSystemLoader(path)
