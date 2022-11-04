@@ -8,3 +8,4 @@
 2022-11-03 01:21:58.186 | INFO     | __main__:<module>:5 - test
 2022-11-03 01:26:20.643 | INFO     | __main__:<module>:5 - Запуск
 2022-11-03 01:26:21.001 | INFO     | __main__:<module>:5 - Запуск
+2022-11-03 23:12:51.811 | INFO     | app.routes:page_not_found_error:133 - 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.

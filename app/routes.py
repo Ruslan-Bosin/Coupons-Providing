@@ -1,7 +1,12 @@
-from app import app, logger
-from flask import render_template, url_for
+from app import app, logger, login_manager
+from flask import render_template, url_for, flash, redirect
 from app.forms import ClientLoginForm
-from app.utils import style
+from app.utils.validators import email_validator, password_validator
+from app.models import ClientModel
+from werkzeug.security import generate_password_hash, check_password_hash
+from app.utils.template_filters import style, script
+from flask_login import login_user
+from app.login import User
 
 
 # Отслеживание URL
@@ -9,6 +14,9 @@ from app.utils import style
 @logger.catch
 @app.route("/")
 def index() -> str:
+
+    # testPassword123BetaTest
+
     data: [str, object] = {
         "title": "Главная страница",
         "select_role_url": url_for("select_role"),
@@ -38,13 +46,29 @@ def select_role() -> str:
 # Клиент - вход
 @logger.catch
 @app.route("/client/login", methods=["POST", "GET"])
-def client_login() -> str:
+def client_login():
     form = ClientLoginForm()
 
     if form.validate_on_submit():
         email = form.email.data
         password = form.password.data
 
+        if email_validator(email) is None and password_validator(password) is None:
+            print(email, password)
+            client_account = ClientModel.get_or_none(ClientModel.email == email)
+            if client_account and check_password_hash(client_account.password, password):
+                user = User().create_with_client_user(user=client_account)
+                login_user(user)
+                return redirect(url_for("client"))
+            else:
+                flash("неверный логи и/или пароль")
+        else:
+            flash_message = str()
+            if password_validator(password):
+                flash_message = password_validator(password)
+            if email_validator(email):
+                flash_message = email_validator(email)
+            flash(flash_message)
 
     data: [str, object] = {
         "title": "Вход - клиент",
@@ -77,6 +101,7 @@ def client_signup() -> str:
 @logger.catch
 @app.route("/client")
 def client() -> str:
+
     data: [str, object] = {
         "title": "Клиент",
         "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),

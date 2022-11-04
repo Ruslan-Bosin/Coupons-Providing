@@ -5,3 +5,6 @@ LOG_ROTATION = "1 MB"
 # Flask
 DEBUG = True
 SECRET_KEY = "s0rXLAH*@fGCPyv8p8##"
+
+# База данных
+DATABASE = "data.db"
