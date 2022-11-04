@@ -30,6 +30,18 @@ class User:
         self._role = "organization"
         return self
 
+    def is_client(self):
+        if self._role == "client":
+            return True
+        else:
+            return False
+
+    def is_organization(self):
+        if self._role == "organization":
+            return True
+        else:
+            return False
+
     def get_id(self):
         if self._role == "client":
             return f"c{self._user.id}"
@@ -46,7 +58,7 @@ class User:
         return True
 
     def get_role(self):
-        return "role/\\"
+        return self._role
 
 
 @login_manager.user_loader

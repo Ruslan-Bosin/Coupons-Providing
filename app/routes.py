@@ -1,11 +1,11 @@
-from app import app, logger, login_manager
-from flask import render_template, url_for, flash, redirect
+from app import app, logger
+from flask import render_template, url_for, flash, redirect, abort
 from app.forms import ClientLoginForm
 from app.utils.validators import email_validator, password_validator
 from app.models import ClientModel
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.utils.template_filters import style, script
-from flask_login import login_user
+from flask_login import login_user, login_required, current_user
 from app.login import User
 
 
@@ -100,7 +100,11 @@ def client_signup() -> str:
 # Основная страница - клиент
 @logger.catch
 @app.route("/client")
+@login_required
 def client() -> str:
+
+    if current_user.is_organization:
+        abort(401)
 
     data: [str, object] = {
         "title": "Клиент",
