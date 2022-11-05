@@ -1,5 +1,5 @@
 from app import logger, login_manager
-from app.models import ClientModel
+from app.models import ClientModel, OrganizationModel
 
 # TODO: Обработку ошибок добавить
 
@@ -14,7 +14,7 @@ class User:
             self._user = ClientModel.get(ClientModel.id == int(user_id[1::]))
             self._role = "client"
         elif user_id.startswith("o"):
-            # TODO: self._user =
+            self._user = OrganizationModel.get(OrganizationModel.id == int(user_id[1::]))
             self._role = "organization"
         else:
             logger.error(f"Неизвестный префикс user_id: {user_id}")
@@ -63,5 +63,4 @@ class User:
 
 @login_manager.user_loader
 def load_user(user_id: str):
-    print(user_id)
     return User().create_with_user_id(user_id=user_id)
