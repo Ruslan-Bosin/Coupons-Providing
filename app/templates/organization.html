@@ -25,6 +25,9 @@
 </head>
 <body>
 <h1>Организация</h1>
-<p>{{ user_info }}</p>
+<p>{{ organization_title }}</p>
+{% for elem in clients %}
+<p>{{ elem.client.name if elem.client.is_private == False else "Имя скрыто" }} - {{ elem.accumulated }} из {{ elem.organization.limit }}</p>
+{% endfor %}
 </body>
 </html>

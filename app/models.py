@@ -1,5 +1,5 @@
 from peewee import Model
-from peewee import AutoField, CharField, BooleanField, IntegerField, BlobField
+from peewee import AutoField, CharField, BooleanField, IntegerField, BlobField, ForeignKeyField, DateField
 from app import db
 
 
@@ -37,6 +37,20 @@ class OrganizationModel(BaseModel):
         return self.__data__
 
 
+class RecordModel(BaseModel):
+    id = AutoField(null=False, primary_key=True)
+    client = ForeignKeyField(ClientModel, null=False)
+    organization = ForeignKeyField(OrganizationModel, null=False)
+    accumulated = IntegerField(null=False, default=1)
+    last_record_date = DateField(null=False)
+
+    class Meta:
+        db_table = "records"
+
+    def to_dict(self):
+        return self.__data__
+
+
 def create_tables():
     with db:
-        db.create_tables([ClientModel, OrganizationModel])
+        db.create_tables([ClientModel, OrganizationModel, RecordModel])

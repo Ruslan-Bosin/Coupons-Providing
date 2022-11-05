@@ -11,7 +11,7 @@
         {{ ui_kit_styles_url | style(data_css) | safe }}
         {{ client_styles_url | style(data_css) | safe }}
         {% else %}
-        {{ uiqr_kit_styles_url | style() | safe }}
+        {{ ui_kit_styles_url | style() | safe }}
         {{ client_styles_url | style() | safe }}
         {% endif %}
     </style>
@@ -21,6 +21,9 @@
 <h1>Клиент</h1>
 <p>{{ user_id }}</p>
 <div id="qrcode"></div>
+{% for elem in active %}
+<p>{{ elem.organization.title }} - {{ elem.accumulated }} из {{ elem.organization.limit }}</p>
+{% endfor %}
 </body>
 <script defer>
     {% if data_js %}

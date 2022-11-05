@@ -2,8 +2,9 @@ from app import app, logger
 from flask import render_template, url_for, flash, redirect, abort
 from app.forms import ClientLoginForm, ClientSignupForm, OrganizationLoginForm, OrganizationSignupForm
 from app.utils.validators import name_validator, email_validator, password_validator, password_confirmation_validator, title_validator
-from app.models import ClientModel, OrganizationModel
+from app.models import ClientModel, OrganizationModel, RecordModel
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import date
 from app.utils.template_filters import style, script
 from flask_login import login_user, login_required, current_user
 from app.login import User
@@ -147,6 +148,7 @@ def client() -> str:
         "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
         "client_styles_url": url_for("static", filename="css/client_styles.css"),
         "client_script_url": url_for("static", filename="js/client_script.js"),
+        "active": RecordModel.select().where(RecordModel.client == int(current_user._user.id)),
         "user_id": current_user._user.to_dict()["id"],
         "data_js": {
             "user_id": current_user._user.to_dict()["id"]
@@ -254,7 +256,8 @@ def organization() -> str:
         "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
         "organization_styles_url": url_for("static", filename="css/organization_styles.css"),
         "organization_script_url": url_for("static", filename="js/organization_script.js"),
-        "user_info": current_user._user.to_dict()
+        "organization_title": current_user._user.to_dict()["title"],
+        "clients": RecordModel.select().where(RecordModel.organization == int(current_user._user.id)),
     }
     return render_template("organization.html", **data)
 
