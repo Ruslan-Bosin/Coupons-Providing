@@ -11,20 +11,22 @@
         {{ ui_kit_styles_url | style(data_css) | safe }}
         {{ client_styles_url | style(data_css) | safe }}
         {% else %}
-        {{ ui_kit_styles_url | style() | safe }}
+        {{ uiqr_kit_styles_url | style() | safe }}
         {{ client_styles_url | style() | safe }}
         {% endif %}
     </style>
-    <script>
-        {% if data_js %}
-        {{ client_script_url | script(data_js) | safe }}
-        {% else %}
-        {{ client_script_url | script() | safe }}
-        {% endif %}
-    </script>
+    <script type="text/javascript" src='{{ url_for("static", filename="js/libs/qrcode.js") }}'></script>
 </head>
-<body>
+<body onload="on_load()">
 <h1>Клиент</h1>
-<p>{{ user_info }}</p>
+<p>{{ user_id }}</p>
+<div id="qrcode"></div>
 </body>
+<script defer>
+    {% if data_js %}
+    {{ client_script_url | script(data_js) | safe }}
+    {% else %}
+    {{ client_script_url | script() | safe }}
+    {% endif %}
+</script>
 </html>

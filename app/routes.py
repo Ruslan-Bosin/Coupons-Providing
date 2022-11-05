@@ -147,7 +147,10 @@ def client() -> str:
         "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
         "client_styles_url": url_for("static", filename="css/client_styles.css"),
         "client_script_url": url_for("static", filename="js/client_script.js"),
-        "user_info": current_user._user.to_dict()
+        "user_id": current_user._user.to_dict()["id"],
+        "data_js": {
+            "user_id": current_user._user.to_dict()["id"]
+        }
     }
     return render_template("client.html", **data)
 

@@ -23,6 +23,7 @@ db = SqliteDatabase(DATABASE)
 # Настройка flask-login
 login_manager = LoginManager(app=app)
 login_manager.login_view = "select_role"
+login_manager.login_message = ""
 
 # Подключение отслеживания URL
 from app import routes
