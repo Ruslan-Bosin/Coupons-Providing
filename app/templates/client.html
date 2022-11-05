@@ -9,22 +9,22 @@
     <style>
         {% if data_css %}
         {{ ui_kit_styles_url | style(data_css) | safe }}
-        {{ index_styles_url | style(data_css) | safe }}
+        {{ client_styles_url | style(data_css) | safe }}
         {% else %}
         {{ ui_kit_styles_url | style() | safe }}
-        {{ index_styles_url | style() | safe }}
+        {{ client_styles_url | style() | safe }}
         {% endif %}
     </style>
     <script>
         {% if data_js %}
-        {{ index_script_url | script(data_js) | safe }}
+        {{ client_script_url | script(data_js) | safe }}
         {% else %}
-        {{ index_script_url | script() | safe }}
+        {{ client_script_url | script() | safe }}
         {% endif %}
     </script>
 </head>
 <body>
-<h1>Главная страница</h1>
-<a href="{{ start_url }}">Начать</a>
+<h1>Клиент</h1>
+<p>{{ user_info }}</p>
 </body>
 </html>
