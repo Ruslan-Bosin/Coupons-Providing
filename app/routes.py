@@ -1,6 +1,6 @@
 from app import app, logger
 from flask import render_template, url_for, flash, redirect, abort
-from app.forms import ClientLoginForm, ClientSignupForm, OrganizationLoginForm, OrganizationSignupForm
+from app.forms import ClientLoginForm, ClientSignupForm, OrganizationLoginForm, OrganizationSignupForm, NewRecordForm
 from app.utils.validators import name_validator, email_validator, password_validator, password_confirmation_validator, title_validator
 from app.models import ClientModel, OrganizationModel, RecordModel
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -244,12 +244,24 @@ def organization_signup():
 
 # Основная страница - организация
 @logger.catch
-@app.route("/organization")
+@app.route("/organization", methods=["POST", "GET"])
 @login_required
-def organization() -> str:
+def organization():
 
     if current_user.is_client():
         abort(401)
+
+    form = NewRecordForm()
+
+    if form.validate_on_submit():
+        id = form.id.data
+
+        client_exists = ClientModel.get_or_none(ClientModel.id == int(id))
+
+        if client_exists:
+            # TODO: логика
+        else:
+            return redirect(url_for("wrong_id"))
 
     data: [str, object] = {
         "title": "Организация",
@@ -257,9 +269,24 @@ def organization() -> str:
         "organization_styles_url": url_for("static", filename="css/organization_styles.css"),
         "organization_script_url": url_for("static", filename="js/organization_script.js"),
         "organization_title": current_user._user.to_dict()["title"],
+        "form": form,
         "clients": RecordModel.select().where(RecordModel.organization == int(current_user._user.id)),
     }
     return render_template("organization.html", **data)
+
+# Под-страница страницы организатора - неверный id
+@logger.catch
+@app.route("/organization/wrong_id", methods=["POST", "GET"])
+@login_required
+def wrong_id():
+    data: [str, object] = {
+        "title": "Ошибка",
+        "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
+        "wrong_id_styles_url": url_for("static", filename="css/wrong_id_styles.css"),
+        "wrong_id_script_url": url_for("static", filename="js/wrong_id_script.js"),
+        "organization_main_url": url_for("organization")
+    }
+    return render_template("wrong_id.html", **data)
 
 # Отслеживание ошибок
 @logger.catch

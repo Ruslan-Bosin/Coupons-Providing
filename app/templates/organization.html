@@ -26,6 +26,11 @@
 <body>
 <h1>Организация</h1>
 <p>{{ organization_title }}</p>
+<form method="post">
+    {{ form.hidden_tag() }}
+    <label>id: {{ form.id(class="id_field") }}</label>
+    {{ form.submit(id="submit_button") }}
+</form>
 {% for elem in clients %}
 <p>{{ elem.client.name if elem.client.is_private == False else "Имя скрыто" }} - {{ elem.accumulated }} из {{ elem.organization.limit }}</p>
 {% endfor %}
