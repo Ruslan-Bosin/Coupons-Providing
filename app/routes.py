@@ -259,7 +259,24 @@ def organization():
         client_exists = ClientModel.get_or_none(ClientModel.id == int(id))
 
         if client_exists:
-            # TODO: логика
+            record_exists = RecordModel.get_or_none((RecordModel.client == id) & (RecordModel.organization == current_user._user.id))
+
+            print(record_exists.to_dict() if record_exists else f"record_exists is {record_exists}")
+
+            if record_exists:
+                record_exists.accumulated += 1
+                record_exists.last_record_date = date.today()
+
+                if record_exists.accumulated >= current_user._user.limit:
+                    record_exists.accumulated = 0
+                    record_exists.save()
+                    return redirect(url_for("accumulated"))
+
+                record_exists.save()
+                return redirect(url_for("added"))
+            else:
+                RecordModel(client=int(id), organization=int(current_user._user.id), last_record_date=date.today()).save()
+                return redirect(url_for("added"))
         else:
             return redirect(url_for("wrong_id"))
 
@@ -274,9 +291,10 @@ def organization():
     }
     return render_template("organization.html", **data)
 
+
 # Под-страница страницы организатора - неверный id
 @logger.catch
-@app.route("/organization/wrong_id", methods=["POST", "GET"])
+@app.route("/organization/wrong_id")
 @login_required
 def wrong_id():
     data: [str, object] = {
@@ -287,6 +305,37 @@ def wrong_id():
         "organization_main_url": url_for("organization")
     }
     return render_template("wrong_id.html", **data)
+
+
+# Под-страница страницы организатора - купон добавлен
+@logger.catch
+@app.route("/organization/added")
+@login_required
+def added():
+    data: [str, object] = {
+        "title": "Добавлено",
+        "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
+        "coupon_added_styles_url": url_for("static", filename="css/coupon_added_styles.css"),
+        "coupon_added_script_url": url_for("static", filename="js/coupon_added_script.js"),
+        "organization_main_url": url_for("organization")
+    }
+    return render_template("coupon_added.html", **data)
+
+
+# Под-страница страницы организатора - накоплено
+@logger.catch
+@app.route("/organization/accumulated")
+@login_required
+def accumulated():
+    data: [str, object] = {
+        "title": "Накоплено",
+        "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
+        "accumulated_styles_url": url_for("static", filename="css/accumulated_styles.css"),
+        "accumulated_script_url": url_for("static", filename="js/accumulated_script.js"),
+        "organization_main_url": url_for("organization")
+    }
+    return render_template("accumulated.html", **data)
+
 
 # Отслеживание ошибок
 @logger.catch

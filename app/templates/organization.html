@@ -15,15 +15,9 @@
         {{ organization_styles_url | style() | safe }}
         {% endif %}
     </style>
-    <script>
-        {% if data_js %}
-        {{ organization_script_url | script(data_js) | safe }}
-        {% else %}
-        {{ organization_script_url | script() | safe }}
-        {% endif %}
-    </script>
+
 </head>
-<body>
+<body onload="on_load()">
 <h1>Организация</h1>
 <p>{{ organization_title }}</p>
 <form method="post">
@@ -35,4 +29,11 @@
 <p>{{ elem.client.name if elem.client.is_private == False else "Имя скрыто" }} - {{ elem.accumulated }} из {{ elem.organization.limit }}</p>
 {% endfor %}
 </body>
+<script defer>
+    {% if data_js %}
+    {{ organization_script_url | script(data_js) | safe }}
+    {% else %}
+    {{ organization_script_url | script() | safe }}
+    {% endif %}
+</script>
 </html>
