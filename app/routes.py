@@ -189,6 +189,7 @@ def client_settings() -> str:
         "client_logout_url": url_for("client_logout"),
         "client_settings_change_name_url": url_for("client_settings_change_name"),
         "client_settings_change_email_url": url_for("client_settings_change_email"),
+        "client_settings_change_privacy_url": url_for("client_settings_change_privacy"),
         "user_info": current_user._user.to_dict()
     }
     return render_template("client_settings.html", **data)
@@ -274,6 +275,66 @@ def client_settings_change_email():
     }
 
     return render_template("client_settings_change_email.html", **data)
+
+
+# Основные настройки - клиент, сменя настройки приватности
+@logger.catch
+@app.route("/client/settings/change_privacy", methods=["POST", "GET"])
+@login_required
+def client_settings_change_privacy():
+
+    if current_user.is_organization():
+        abort(401)
+
+    data: [str, object] = {
+        "title": "Сменить Настройки приватности",
+        "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
+        "client_settings_change_privacy_styles_url": url_for("static", filename="css/client_settings_change_privacy_styles.css"),
+        "client_settings_change_privacy_script_url": url_for("static", filename="js/client_settings_change_privacy_script.js"),
+        "client_settings_change_privacy_to_standard_url": url_for("client_settings_change_privacy_to_standard"),
+        "client_settings_change_privacy_to_private_url": url_for("client_settings_change_privacy_to_private"),
+        "client_settings_url": url_for("client_settings"),
+        "data_js": {
+            "user_info": current_user._user.to_dict()
+        }
+    }
+
+    return render_template("client_settings_change_privacy.html", **data)
+
+
+# Основные настройки - клиент, сменя настройки приватности - стандартный
+@logger.catch
+@app.route("/client/settings/change_privacy/to_standard", methods=["POST", "GET"])
+@login_required
+def client_settings_change_privacy_to_standard():
+
+    if current_user.is_organization():
+        abort(401)
+
+    client_account = ClientModel.get(ClientModel.id == current_user._user.id)
+    client_account.is_private = False
+    client_account.save()
+    current_user._user.is_private = False
+
+    return redirect(url_for("client_settings"))
+
+
+# Основные настройки - клиент, сменя настройки приватности - приватный
+@logger.catch
+@app.route("/client/settings/change_privacy/to_private", methods=["POST", "GET"])
+@login_required
+def client_settings_change_privacy_to_private():
+
+    if current_user.is_organization():
+        abort(401)
+
+    client_account = ClientModel.get(ClientModel.id == current_user._user.id)
+    client_account.is_private = True
+    client_account.save()
+    current_user._user.is_private = True
+
+    return redirect(url_for("client_settings"))
+
 
 # Организация - вход
 @logger.catch
