@@ -6,7 +6,7 @@ def name_validator(name: str) -> None | str:
 
 def title_validator(title: str) -> None | str:
     if title == "aa":
-        return "Введите настоящие имя"
+        return "Введите настоящие название"
     return None
 
 

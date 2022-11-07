@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, IntegerField
 
 
+# Формы входа/регистрации
 class ClientLoginForm(FlaskForm):
     email = StringField("email")
     password = PasswordField("password")
@@ -29,7 +30,17 @@ class OrganizationSignupForm(FlaskForm):
     password_confirmation = PasswordField("password_confirmation")
     submit = SubmitField("signup")
 
-
+# Форма нового купона
 class NewRecordForm(FlaskForm):
     id = IntegerField("id")
     submit = SubmitField("checkout")
+
+# Формы обновления данных профиля - клиент
+class ClientChangeName(FlaskForm):
+    name = StringField("name")
+    submit = SubmitField("save")
+
+# Формы обновления данных профиля - клиент
+class ClientChangeEmail(FlaskForm):
+    email = StringField("email")
+    submit = SubmitField("save")

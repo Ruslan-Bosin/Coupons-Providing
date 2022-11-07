@@ -1,6 +1,6 @@
 from app import app, logger
 from flask import render_template, url_for, flash, redirect, abort
-from app.forms import ClientLoginForm, ClientSignupForm, OrganizationLoginForm, OrganizationSignupForm, NewRecordForm
+from app.forms import ClientLoginForm, ClientSignupForm, OrganizationLoginForm, OrganizationSignupForm, NewRecordForm, ClientChangeName, ClientChangeEmail
 from app.utils.validators import name_validator, email_validator, password_validator, password_confirmation_validator, title_validator
 from app.models import ClientModel, OrganizationModel, RecordModel
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -188,30 +188,92 @@ def client_settings() -> str:
         "client_main_url": url_for("client"),
         "client_logout_url": url_for("client_logout"),
         "client_settings_change_name_url": url_for("client_settings_change_name"),
+        "client_settings_change_email_url": url_for("client_settings_change_email"),
         "user_info": current_user._user.to_dict()
     }
     return render_template("client_settings.html", **data)
 
 
-# Основные настройки - клиент
+# Основные настройки - клиент, сменя имени
 @logger.catch
-@app.route("/client/settings/change_name")
+@app.route("/client/settings/change_name", methods=["POST", "GET"])
 @login_required
-def client_settings_change_name() -> str:
+def client_settings_change_name():
 
     if current_user.is_organization():
         abort(401)
+
+    form = ClientChangeName()
+
+    if form.validate_on_submit():
+        name = form.name.data
+
+        if name_validator(name) is None:
+            client_account = ClientModel.get(ClientModel.id == current_user._user.id)
+            client_account.name = name
+            client_account.save()
+            current_user._user.name = name
+            return redirect(url_for("client_settings"))
+        else:
+            flash_message = str()
+            if name_validator(name):
+                flash_message = name_validator(name)
+            flash(flash_message)
 
     data: [str, object] = {
         "title": "Сменить имя",
         "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
         "client_settings_change_name_styles_url": url_for("static", filename="css/client_settings_change_name_styles.css"),
         "client_settings_change_name_script_url": url_for("static", filename="js/client_settings_change_name_script.js"),
+        "form": form,
         "client_settings_url": url_for("client_settings"),
-        "user_info": current_user._user.to_dict()
+        "data_js": {
+            "user_info": current_user._user.to_dict()
+        }
     }
 
     return render_template("client_settings_change_name.html", **data)
+
+
+# Основные настройки - клиент, сменя почты
+@logger.catch
+@app.route("/client/settings/change_email", methods=["POST", "GET"])
+@login_required
+def client_settings_change_email():
+
+    if current_user.is_organization():
+        abort(401)
+
+    form = ClientChangeEmail()
+
+    if form.validate_on_submit():
+        email = form.email.data
+
+        if email_validator(email) is None:
+            client_account = ClientModel.get(ClientModel.id == current_user._user.id)
+            client_account.email = email
+            client_account.save()
+            current_user._user.email = email
+            return redirect(url_for("client_settings"))
+        else:
+            flash_message = str()
+            if email_validator(email):
+                flash_message = email_validator(email)
+            flash(flash_message)
+
+    data: [str, object] = {
+        "title": "Сменить email",
+        "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
+        "client_settings_change_email_styles_url": url_for("static", filename="css/client_settings_change_email_styles.css"),
+        "client_settings_change_email_script_url": url_for("static", filename="js/client_settings_change_email_script.js"),
+        "form": form,
+        "client_settings_url": url_for("client_settings"),
+        "data_js": {
+            "user_info": current_user._user.to_dict()
+        }
+    }
+
+    return render_template("client_settings_change_email.html", **data)
 
 # Организация - вход
 @logger.catch

@@ -16,10 +16,10 @@
         {% endif %}
     </style>
 </head>
-<body onload="validator_with_error_message_checker()">
+<body>
 <h1>Настройки - клиент</h1>
 <p>{{ user_info["name"] }} <a href="{{ client_settings_change_name_url }}">-></a> </p>
-<p>{{ user_info["email"] }}</p>
+<p>{{ user_info["email"] }} <a href="{{ client_settings_change_email_url }}">-></a> </p>
 <p>{{ "Приватный" if user_info["is_private"] else "Стандартный" }}</p>
 <a href="{{ client_main_url }}">назад</a>
 <a href="{{ client_logout_url }}">выйти</a>

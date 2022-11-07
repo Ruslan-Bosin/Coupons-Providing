@@ -3,11 +3,10 @@ var submit_button = document.getElementById("submit_button");
 
 
 function validator() {
-    var name_text = document.getElementById("name").value;
+    var email_text = document.getElementById("email").value;
     var message = "";
 
-    if (name_text.indexOf('aa') != -1) {message = "Неверное имя"}
-    // TODO: name_text validator
+    if (email_text.indexOf('@') == -1) {message = "Неверный формат почты"}
 
     error_message.innerText = message;
     if (message == "") {submit_button.disabled = false;}
@@ -17,7 +16,7 @@ function validator() {
 
 function validator_with_error_message_checker() {
 
-    document.getElementById("name").value = '{{ user_info["name"] }}';
+    document.getElementById("email").value = '{{ user_info["email"] }}';
 
     if (error_message.innerText == "") {
         validator()
