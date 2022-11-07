@@ -6,7 +6,7 @@ from app.models import ClientModel, OrganizationModel, RecordModel
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import date
 from app.utils.template_filters import style, script
-from flask_login import login_user, login_required, current_user
+from flask_login import login_user, login_required, current_user, logout_user
 from app.login import User
 
 
@@ -48,6 +48,19 @@ def select_role() -> str:
     }
     return render_template("select_role.html", **data_html)
 
+
+# Клиент - выход
+@logger.catch
+@login_required
+@app.route("/client/logout", methods=["POST", "GET"])
+def client_logout():
+
+    if current_user.is_organization():
+        abort(401)
+
+    logout_user()
+
+    return redirect(url_for("select_role"))
 
 # Клиент - вход
 @logger.catch
@@ -148,6 +161,7 @@ def client() -> str:
         "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
         "client_styles_url": url_for("static", filename="css/client_styles.css"),
         "client_script_url": url_for("static", filename="js/client_script.js"),
+        "client_settings_url": url_for("client_settings"),
         "active": RecordModel.select().where(RecordModel.client == int(current_user._user.id)).order_by(RecordModel.accumulated.desc()),
         "user_id": current_user._user.to_dict()["id"],
         "data_js": {
@@ -156,6 +170,48 @@ def client() -> str:
     }
     return render_template("client.html", **data)
 
+
+# Основные настройки - клиент
+@logger.catch
+@app.route("/client/settings")
+@login_required
+def client_settings() -> str:
+
+    if current_user.is_organization():
+        abort(401)
+
+    data: [str, object] = {
+        "title": "Настройки",
+        "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
+        "client_settings_styles_url": url_for("static", filename="css/client_settings_styles.css"),
+        "client_settings_script_url": url_for("static", filename="js/client_settings_script.js"),
+        "client_main_url": url_for("client"),
+        "client_logout_url": url_for("client_logout"),
+        "client_settings_change_name_url": url_for("client_settings_change_name"),
+        "user_info": current_user._user.to_dict()
+    }
+    return render_template("client_settings.html", **data)
+
+
+# Основные настройки - клиент
+@logger.catch
+@app.route("/client/settings/change_name")
+@login_required
+def client_settings_change_name() -> str:
+
+    if current_user.is_organization():
+        abort(401)
+
+    data: [str, object] = {
+        "title": "Сменить имя",
+        "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
+        "client_settings_change_name_styles_url": url_for("static", filename="css/client_settings_change_name_styles.css"),
+        "client_settings_change_name_script_url": url_for("static", filename="js/client_settings_change_name_script.js"),
+        "client_settings_url": url_for("client_settings"),
+        "user_info": current_user._user.to_dict()
+    }
+
+    return render_template("client_settings_change_name.html", **data)
 
 # Организация - вход
 @logger.catch

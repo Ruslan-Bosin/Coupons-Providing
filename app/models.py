@@ -1,5 +1,5 @@
 from peewee import Model
-from peewee import AutoField, CharField, BooleanField, IntegerField, BlobField, ForeignKeyField, DateField
+from peewee import AutoField, CharField, BooleanField, IntegerField, BlobField, ForeignKeyField, DateField, FixedCharField
 from app import db
 
 
@@ -29,6 +29,7 @@ class OrganizationModel(BaseModel):
     password = CharField(null=False)
     limit = IntegerField(default=10)
     image = BlobField(default='')
+    sticker = FixedCharField(max_length=1, null=False, default="⭐")
 
     class Meta:
         db_table = "organizations"

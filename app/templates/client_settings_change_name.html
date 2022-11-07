@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{ title }}</title>
+    <style>
+        {% if data_css %}
+        {{ ui_kit_styles_url | style(data_css) | safe }}
+        {{ cclient_settings_change_name_styles_url | style(data_css) | safe }}
+        {% else %}
+        {{ ui_kit_styles_url | style() | safe }}
+        {{ client_settings_change_name_styles_url | style() | safe }}
+        {% endif %}
+    </style>
+</head>
+<body onload="validator_with_error_message_checker()">
+<a href="{{ client_settings_url }}">назад</a>
+</body>
+<script defer>
+    {% if data_js %}
+    {{ client_settings_change_name_script_url | script(data_js) | safe }}
+    {% else %}
+    {{ client_settings_change_name_script_url | script() | safe }}
+    {% endif %}
+</script>
+</html>
