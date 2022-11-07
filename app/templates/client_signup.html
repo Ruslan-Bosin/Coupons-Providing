@@ -19,7 +19,7 @@
 <body onload="validator_with_error_message_checker()">
 <h1>Регистрация - клиент</h1>
 <a href="{{ select_role_url }}">К выбору</a>
-<a href="{{ client_login_url }}">Регистрация</a>
+<a href="{{ client_login_url }}">Вход</a>
 <form method="post">
     {{ form.hidden_tag() }}
     <label>Name: {{ form.name(class="name_field", onchange="validator()", onkeydown="validator()") }}</label>
