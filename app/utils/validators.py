@@ -33,4 +33,8 @@ def sticker_validator(sticker: str) -> None | str:
         return "Длина поля стикера должна быть равна 1-му"
     return None
 
+
+def image_validator(path: str) -> None | str:
+    return None
+
 # TODO: написать нормальные валидаторы

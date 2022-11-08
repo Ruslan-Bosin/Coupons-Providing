@@ -1,7 +1,7 @@
 from app import app, logger
-from flask import render_template, url_for, flash, redirect, abort
+from flask import render_template, url_for, flash, redirect, abort, make_response, request
 from app.forms import ClientLoginForm, ClientSignupForm, OrganizationLoginForm, OrganizationSignupForm, NewRecordForm, ClientChangeName, ClientChangeEmail, ClientChangePassword, OrganizationChangeName, OrganizationChangeEmail, OrganizationChangePassword, OrganizationChangeSticker
-from app.utils.validators import name_validator, email_validator, password_validator, password_confirmation_validator, title_validator, sticker_validator
+from app.utils.validators import name_validator, email_validator, password_validator, password_confirmation_validator, title_validator, sticker_validator, image_validator
 from app.models import ClientModel, OrganizationModel, RecordModel
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import date
@@ -586,6 +586,7 @@ def organization_settings() -> str:
         "organization_settings_script_url": url_for("static", filename="js/organization_settings_script.js"),
         "organization_main_url": url_for("organization"),
         "organization_logout_url": url_for("organization_logout"),
+        "organization_settings_change_picture_url": url_for("organization_settings_change_picture"),
         "organization_settings_change_name_url": url_for("organization_settings_change_name"),
         "organization_settings_change_email_url": url_for("organization_settings_change_email"),
         "organization_settings_change_password_url": url_for("organization_settings_change_password"),
@@ -594,6 +595,83 @@ def organization_settings() -> str:
     }
 
     return render_template("organization_settings.html", **data)
+
+
+# Основные настройки - организации, сменя картинки
+@logger.catch
+@app.route("/organization/settings/change_picture", methods=["POST", "GET"])
+@login_required
+def organization_settings_change_picture() -> str:
+
+    if current_user.is_client():
+        abort(401)
+
+    data: [str, object] = {
+        "title": "Сменить имя",
+        "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
+        "organization_settings_change_picture_styles_url": url_for("static", filename="css/organization_settings_change_picture_styles.css"),
+        "organization_settings_change_picture_script_url": url_for("static", filename="js/organization_settings_change_picture_script.js"),
+        "organization_settings_change_picture_upload_url": url_for("organization_settings_change_picture_upload"),
+        "organization_settings_url": url_for("organization_settings"),
+        "user_info": current_user._user.to_dict()
+    }
+
+    return render_template("organization_settings_change_picture.html", **data)
+
+
+# Основные настройки - организации, сменя картинки - загрузка
+@logger.catch
+@app.route("/organization/settings/change_picture/upload", methods=["POST", "GET"])
+@login_required
+def organization_settings_change_picture_upload():
+
+    if current_user.is_client():
+        abort(401)
+
+    if request.method == "POST":
+        file = request.files["file"]
+        if file and image_validator(file.filename) is None:
+            try:
+                image = file.read()
+                from sqlite3 import Binary # TODO: change (remove sqlite3)
+                bin_image = Binary(image)
+
+                organization_account = OrganizationModel.get(OrganizationModel.id == current_user._user.id)
+                organization_account.image = bin_image
+                organization_account.save()
+                current_user._user.image = bin_image
+
+                return redirect(url_for("organization_settings"))
+            except FileNotFoundError as error:
+                flash("файл не найден")
+                redirect(url_for("organization_settings_change_picture"))
+        else:
+            flash(image_validator(file.filename) if file else "неизвестная ошибка")
+            redirect(url_for("organization_settings_change_picture"))
+
+
+    return redirect(url_for("organization_settings"))
+
+
+# Отображение картинок пользователей
+@logger.catch
+@app.route("/organization/picture/<int:id>")
+@login_required
+def organization_picture_get(id: int):
+
+    max_id = -1
+    for elem in OrganizationModel.select().order_by(OrganizationModel.id.desc()).limit(1):
+        if elem.id > max_id:
+            max_id = elem.id
+
+    if id > max_id:
+        abort(404)
+
+    image = OrganizationModel.get(OrganizationModel.id == id).image
+    h = make_response(image)
+    h.headers["Content-Type"] = "image/png"
+
+    return h
 
 
 # Основные настройки - организация, сменя имени

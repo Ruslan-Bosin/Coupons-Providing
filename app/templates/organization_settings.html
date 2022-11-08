@@ -18,6 +18,7 @@
 </head>
 <body>
 <h1>Настройки - организация</h1>
+<a href="{{ organization_settings_change_picture_url }}"> <img src="{{ url_for('organization_picture_get', id=user_info['id']) }}"> </a>
 <p>{{ user_info["title"] }} <a href="{{ organization_settings_change_name_url }}"> -> </a> </p>
 <p>{{ user_info["email"] }} <a href="{{ organization_settings_change_email_url }}"> -> </a> </p>
 <p>{{ "•••••••••••••••" }} <a href="{{ organization_settings_change_password_url }}"> -> </a> </p>

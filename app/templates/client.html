@@ -22,7 +22,10 @@
 <p>{{ user_id }}</p>
 <div id="qrcode"></div>
 {% for elem in active %}
-<p>{{ elem.organization.title }} - {{ elem.accumulated }} из {{ elem.organization.limit }}</p>
+<p>
+    <img src="{{ url_for('organization_picture_get', id=elem.organization.id) }}">
+    {{ elem.organization.title }} - {{ elem.accumulated }} из {{ elem.organization.limit }}
+</p>
 {% endfor %}
 <a href="{{ client_settings_url }}">настройки</a>
 </body>
