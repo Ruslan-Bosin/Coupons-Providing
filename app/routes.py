@@ -1,6 +1,6 @@
 from app import app, logger
 from flask import render_template, url_for, flash, redirect, abort
-from app.forms import ClientLoginForm, ClientSignupForm, OrganizationLoginForm, OrganizationSignupForm, NewRecordForm, ClientChangeName, ClientChangeEmail
+from app.forms import ClientLoginForm, ClientSignupForm, OrganizationLoginForm, OrganizationSignupForm, NewRecordForm, ClientChangeName, ClientChangeEmail, ClientChangePassword
 from app.utils.validators import name_validator, email_validator, password_validator, password_confirmation_validator, title_validator
 from app.models import ClientModel, OrganizationModel, RecordModel
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -190,6 +190,7 @@ def client_settings() -> str:
         "client_settings_change_name_url": url_for("client_settings_change_name"),
         "client_settings_change_email_url": url_for("client_settings_change_email"),
         "client_settings_change_privacy_url": url_for("client_settings_change_privacy"),
+        "client_settings_change_password_url": url_for("client_settings_change_password"),
         "user_info": current_user._user.to_dict()
     }
     return render_template("client_settings.html", **data)
@@ -276,6 +277,43 @@ def client_settings_change_email():
 
     return render_template("client_settings_change_email.html", **data)
 
+
+# Основные настройки - клиент, сменя пароля
+@logger.catch
+@app.route("/client/settings/change_password", methods=["POST", "GET"])
+@login_required
+def client_settings_change_password():
+
+    if current_user.is_organization():
+        abort(401)
+
+    form = ClientChangePassword()
+
+    if form.validate_on_submit():
+        password = form.password.data
+
+        if password_validator(password) is None:
+            client_account = ClientModel.get(ClientModel.id == current_user._user.id)
+            client_account.password = generate_password_hash(password)
+            client_account.save()
+            current_user._user.password = generate_password_hash(password)
+            return redirect(url_for("client_settings"))
+        else:
+            flash_message = str()
+            if password_validator(password):
+                flash_message = password_validator(password)
+            flash(flash_message)
+
+    data: [str, object] = {
+        "title": "Сменить пароль",
+        "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
+        "client_settings_change_password_styles_url": url_for("static", filename="css/client_settings_change_password_styles.css"),
+        "client_settings_change_password_script_url": url_for("static", filename="js/client_settings_change_password_script.js"),
+        "form": form,
+        "client_settings_url": url_for("client_settings"),
+    }
+
+    return render_template("client_settings_change_password.html", **data)
 
 # Основные настройки - клиент, сменя настройки приватности
 @logger.catch

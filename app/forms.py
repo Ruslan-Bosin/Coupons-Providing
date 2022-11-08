@@ -44,3 +44,8 @@ class ClientChangeName(FlaskForm):
 class ClientChangeEmail(FlaskForm):
     email = StringField("email")
     submit = SubmitField("save")
+
+# Формы обновления данных профиля - клиент
+class ClientChangePassword(FlaskForm):
+    password = StringField("password")
+    submit = SubmitField("save")

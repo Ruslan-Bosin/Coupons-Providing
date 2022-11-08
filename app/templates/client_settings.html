@@ -20,6 +20,7 @@
 <h1>Настройки - клиент</h1>
 <p>{{ user_info["name"] }} <a href="{{ client_settings_change_name_url }}"> -> </a> </p>
 <p>{{ user_info["email"] }} <a href="{{ client_settings_change_email_url }}"> -> </a> </p>
+<p>{{ "•••••••••••••••" }} <a href="{{ client_settings_change_password_url }}"> -> </a> </p>
 <p>{{ "Приватный" if user_info["is_private"] else "Стандартный" }} <a href="{{ client_settings_change_privacy_url }}"> -> </a> </p>
 <a href="{{ client_main_url }}">назад</a>
 <a href="{{ client_logout_url }}">выйти</a>
