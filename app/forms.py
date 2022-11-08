@@ -30,22 +30,50 @@ class OrganizationSignupForm(FlaskForm):
     password_confirmation = PasswordField("password_confirmation")
     submit = SubmitField("signup")
 
+
 # Форма нового купона
 class NewRecordForm(FlaskForm):
     id = IntegerField("id")
     submit = SubmitField("checkout")
+
 
 # Формы обновления данных профиля - клиент
 class ClientChangeName(FlaskForm):
     name = StringField("name")
     submit = SubmitField("save")
 
+
 # Формы обновления данных профиля - клиент
 class ClientChangeEmail(FlaskForm):
     email = StringField("email")
     submit = SubmitField("save")
 
+
 # Формы обновления данных профиля - клиент
 class ClientChangePassword(FlaskForm):
     password = StringField("password")
+    submit = SubmitField("save")
+
+
+# Формы обновления данных профиля - организация
+class OrganizationChangeName(FlaskForm):
+    title = StringField("title")
+    submit = SubmitField("save")
+
+
+# Формы обновления данных профиля - организация
+class OrganizationChangeEmail(FlaskForm):
+    email = StringField("email")
+    submit = SubmitField("save")
+
+
+# Формы обновления данных профиля - организация
+class OrganizationChangePassword(FlaskForm):
+    password = StringField("password")
+    submit = SubmitField("save")
+
+
+# Формы обновления данных профиля - организация
+class OrganizationChangeSticker(FlaskForm):
+    sticker = StringField("sticker")
     submit = SubmitField("save")

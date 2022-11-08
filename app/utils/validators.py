@@ -27,4 +27,10 @@ def password_confirmation_validator(password: str, first_password: str) -> None 
         return "Пароли не совпадают"
     return None
 
+
+def sticker_validator(sticker: str) -> None | str:
+    if len(sticker) > 1:
+        return "Длина поля стикера должна быть равна 1-му"
+    return None
+
 # TODO: написать нормальные валидаторы

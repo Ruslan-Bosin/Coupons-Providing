@@ -1,7 +1,7 @@
 from app import app, logger
 from flask import render_template, url_for, flash, redirect, abort
-from app.forms import ClientLoginForm, ClientSignupForm, OrganizationLoginForm, OrganizationSignupForm, NewRecordForm, ClientChangeName, ClientChangeEmail, ClientChangePassword
-from app.utils.validators import name_validator, email_validator, password_validator, password_confirmation_validator, title_validator
+from app.forms import ClientLoginForm, ClientSignupForm, OrganizationLoginForm, OrganizationSignupForm, NewRecordForm, ClientChangeName, ClientChangeEmail, ClientChangePassword, OrganizationChangeName, OrganizationChangeEmail, OrganizationChangePassword, OrganizationChangeSticker
+from app.utils.validators import name_validator, email_validator, password_validator, password_confirmation_validator, title_validator, sticker_validator
 from app.models import ClientModel, OrganizationModel, RecordModel
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import date
@@ -315,6 +315,7 @@ def client_settings_change_password():
 
     return render_template("client_settings_change_password.html", **data)
 
+
 # Основные настройки - клиент, сменя настройки приватности
 @logger.catch
 @app.route("/client/settings/change_privacy", methods=["POST", "GET"])
@@ -372,6 +373,20 @@ def client_settings_change_privacy_to_private():
     current_user._user.is_private = True
 
     return redirect(url_for("client_settings"))
+
+
+# Организация - выход
+@logger.catch
+@login_required
+@app.route("/organization/logout", methods=["POST", "GET"])
+def organization_logout():
+
+    if current_user.is_client():
+        abort(401)
+
+    logout_user()
+
+    return redirect(url_for("select_role"))
 
 
 # Организация - вход
@@ -503,6 +518,7 @@ def organization():
         "organization_styles_url": url_for("static", filename="css/organization_styles.css"),
         "organization_script_url": url_for("static", filename="js/organization_script.js"),
         "organization_title": current_user._user.to_dict()["title"],
+        "organization_settings_url": url_for("organization_settings"),
         "form": form,
         "clients": RecordModel.select().where(RecordModel.organization == int(current_user._user.id)).order_by(RecordModel.accumulated.desc()),
     }
@@ -552,6 +568,193 @@ def accumulated():
         "organization_main_url": url_for("organization")
     }
     return render_template("accumulated.html", **data)
+
+
+# Основные настройки - организации
+@logger.catch
+@app.route("/organization/settings")
+@login_required
+def organization_settings() -> str:
+
+    if current_user.is_client():
+        abort(401)
+
+    data: [str, object] = {
+        "title": "Настройки",
+        "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
+        "organization_settings_styles_url": url_for("static", filename="css/organization_settings_styles.css"),
+        "organization_settings_script_url": url_for("static", filename="js/organization_settings_script.js"),
+        "organization_main_url": url_for("organization"),
+        "organization_logout_url": url_for("organization_logout"),
+        "organization_settings_change_name_url": url_for("organization_settings_change_name"),
+        "organization_settings_change_email_url": url_for("organization_settings_change_email"),
+        "organization_settings_change_password_url": url_for("organization_settings_change_password"),
+        "organization_settings_change_sticker_url": url_for("organization_settings_change_sticker"),
+        "user_info": current_user._user.to_dict()
+    }
+
+    return render_template("organization_settings.html", **data)
+
+
+# Основные настройки - организация, сменя имени
+@logger.catch
+@app.route("/organization/settings/change_name", methods=["POST", "GET"])
+@login_required
+def organization_settings_change_name():
+
+    if current_user.is_client():
+        abort(401)
+
+    form = OrganizationChangeName()
+
+    if form.validate_on_submit():
+        title = form.title.data
+
+        if title_validator(title) is None:
+            organization_account = OrganizationModel.get(OrganizationModel.id == current_user._user.id)
+            organization_account.title = title
+            organization_account.save()
+            current_user._user.title = title
+            return redirect(url_for("organization_settings"))
+        else:
+            flash_message = str()
+            if title_validator(title):
+                flash_message = title_validator(title)
+            flash(flash_message)
+
+    data: [str, object] = {
+        "title": "Сменить имя",
+        "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
+        "organization_settings_change_name_styles_url": url_for("static", filename="css/organization_settings_change_name_styles.css"),
+        "organization_settings_change_name_script_url": url_for("static", filename="js/organization_settings_change_name_script.js"),
+        "form": form,
+        "organization_settings_url": url_for("organization_settings"),
+        "data_js": {
+            "user_info": current_user._user.to_dict()
+        }
+    }
+
+    return render_template("organization_settings_change_name.html", **data)
+
+
+# Основные настройки - организация, сменя почты
+@logger.catch
+@app.route("/organization/settings/change_email", methods=["POST", "GET"])
+@login_required
+def organization_settings_change_email():
+
+    if current_user.is_client():
+        abort(401)
+
+    form = OrganizationChangeEmail()
+
+    if form.validate_on_submit():
+        email = form.email.data
+
+        if email_validator(email) is None:
+            organization_account = OrganizationModel.get(OrganizationModel.id == current_user._user.id)
+            organization_account.email = email
+            organization_account.save()
+            current_user._user.email = email
+            return redirect(url_for("organization_settings"))
+        else:
+            flash_message = str()
+            if email_validator(email):
+                flash_message = email_validator(email)
+            flash(flash_message)
+
+    data: [str, object] = {
+        "title": "Сменить email",
+        "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
+        "organization_settings_change_email_styles_url": url_for("static", filename="css/organization_settings_change_email_styles.css"),
+        "organization_settings_change_email_script_url": url_for("static", filename="js/organization_settings_change_email_script.js"),
+        "form": form,
+        "organization_settings_url": url_for("organization_settings"),
+        "data_js": {
+            "user_info": current_user._user.to_dict()
+        }
+    }
+
+    return render_template("organization_settings_change_email.html", **data)
+
+
+# Основные настройки - клиент, сменя пароля
+@logger.catch
+@app.route("/organization/settings/change_password", methods=["POST", "GET"])
+@login_required
+def organization_settings_change_password():
+
+    if current_user.is_client():
+        abort(401)
+
+    form = OrganizationChangePassword()
+
+    if form.validate_on_submit():
+        password = form.password.data
+
+        if password_validator(password) is None:
+            organization_account = OrganizationModel.get(OrganizationModel.id == current_user._user.id)
+            organization_account.password = generate_password_hash(password)
+            organization_account.save()
+            current_user._user.password = generate_password_hash(password)
+            return redirect(url_for("organization_settings"))
+        else:
+            flash_message = str()
+            if password_validator(password):
+                flash_message = password_validator(password)
+            flash(flash_message)
+
+    data: [str, object] = {
+        "title": "Сменить пароль",
+        "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
+        "organization_settings_change_password_styles_url": url_for("static", filename="css/organization_settings_change_password_styles.css"),
+        "organization_settings_change_password_script_url": url_for("static", filename="js/organization_settings_change_password_script.js"),
+        "form": form,
+        "organization_settings_url": url_for("organization_settings"),
+    }
+
+    return render_template("organization_settings_change_password.html", **data)
+
+
+# Основные настройки - организация, сменя почты
+@logger.catch
+@app.route("/organization/settings/change_sticker", methods=["POST", "GET"])
+@login_required
+def organization_settings_change_sticker():
+
+    if current_user.is_client():
+        abort(401)
+
+    form = OrganizationChangeSticker()
+
+    if form.validate_on_submit():
+        sticker = form.sticker.data
+
+        if sticker_validator(sticker) is None:
+            organization_account = OrganizationModel.get(OrganizationModel.id == current_user._user.id)
+            organization_account.sticker = sticker
+            organization_account.save()
+            current_user._user.sticker = sticker
+            return redirect(url_for("organization_settings"))
+        else:
+            flash_message = str()
+            if sticker_validator(sticker):
+                flash_message = sticker_validator(sticker)
+            flash(flash_message)
+
+    data: [str, object] = {
+        "title": "Сменить стикер",
+        "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
+        "organization_settings_change_sticker_styles_url": url_for("static", filename="css/organization_settings_change_sticker_styles.css"),
+        "organization_settings_change_sticker_script_url": url_for("static", filename="js/organization_settings_change_sticker_script.js"),
+        "form": form,
+        "organization_settings_url": url_for("organization_settings"),
+        "data_js": {
+            "user_info": current_user._user.to_dict()
+        }
+    }
+
+    return render_template("organization_settings_change_sticker.html", **data)
 
 
 # Отслеживание ошибок

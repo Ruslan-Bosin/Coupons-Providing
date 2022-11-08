@@ -9,7 +9,7 @@
     <style>
         {% if data_css %}
         {{ ui_kit_styles_url | style(data_css) | safe }}
-        {{ cclient_settings_change_email_styles_url | style(data_css) | safe }}
+        {{ client_settings_change_email_styles_url | style(data_css) | safe }}
         {% else %}
         {{ ui_kit_styles_url | style() | safe }}
         {{ client_settings_change_email_styles_url | style() | safe }}
