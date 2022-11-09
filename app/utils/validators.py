@@ -37,4 +37,9 @@ def sticker_validator(sticker: str) -> None | str:
 def image_validator(path: str) -> None | str:
     return None
 
+
+def limit_validator(limit: int) -> None | str:
+    return None
+
+
 # TODO: написать нормальные валидаторы

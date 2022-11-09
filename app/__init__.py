@@ -2,12 +2,13 @@ from flask import Flask, render_template
 from loguru import logger
 from peewee import SqliteDatabase
 from flask_login import LoginManager
-from config import LOG_NAME, LOG_ROTATION, SECRET_KEY, SERVICE_DATABASE
+from config import LOG_NAME, LOG_ROTATION, SECRET_KEY, SERVICE_DATABASE, MAX_CONTENT_LENGTH
 
 
 # Создание основного web приложения
 app: Flask = Flask(__name__)
 app.config["SECRET_KEY"] = SECRET_KEY
+app.config["MAX_CONTENT_LENGTH"] = MAX_CONTENT_LENGTH
 
 # Добавление файла сохранения log-ов
 logger.add(

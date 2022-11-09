@@ -654,7 +654,7 @@ def organization_settings_change_picture_upload():
 # Отображение картинок пользователей
 @logger.catch
 @app.route("/organization/picture/<int:id>")
-@login_required
+# @login_required
 def organization_picture_get(id: int):
 
     max_id = -1
