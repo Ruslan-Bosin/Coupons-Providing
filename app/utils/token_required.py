@@ -1,7 +1,7 @@
 from functools import wraps
 from config import SECRET_KEY
 from flask import request, jsonify, make_response
-from app.models import ClientModel, OrganizationModel
+from app.models import ClientModel, OrganizationModel, AdminModel
 import jwt
 
 
@@ -23,7 +23,9 @@ def token_required(f):
             if role == "client":
                 rest_user = ClientModel.get_or_none(ClientModel.id == data["id"])
             elif role == "organization":
-                rest_user = OrganizationModel.get_or_none((OrganizationModel.id == data["id"]))
+                rest_user = OrganizationModel.get_or_none(OrganizationModel.id == data["id"])
+            elif role == "admin":
+                rest_user = AdminModel.get_or_none(AdminModel.id == data["id"])
         except Exception as error:
             return make_response(jsonify({"message": "token is missing"}), 401)
 

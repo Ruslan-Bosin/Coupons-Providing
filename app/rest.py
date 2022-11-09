@@ -1,6 +1,6 @@
 from config import SECRET_KEY
 from app import app, logger
-from app.models import ClientModel, OrganizationModel, RecordModel
+from app.models import ClientModel, OrganizationModel, RecordModel, AdminModel
 from app.utils.token_required import token_required
 from app.utils.validators import *
 from flask import request, jsonify, make_response, url_for
@@ -356,3 +356,46 @@ def rest_organization_record(rest_user):
             return jsonify({"message": "record added"})
     else:
         return make_response(jsonify({"message": "wrong id"}), 417)
+
+
+# Администрация
+@app.route("/rest/admin/login", methods=["POST"])
+def rest_admin_login():
+
+    data: dict = request.get_json()
+    email: str = data.get("email")
+    password: str = data.get("password")
+
+    if not email or not password:
+        return make_response(jsonify({"message": "could not verify"}), 401)
+
+    admin = AdminModel.get_or_none(AdminModel.email == email)
+    if not admin:
+        return make_response(jsonify({"message": "could not verify"}), 401)
+    if not check_password_hash(admin.password, password):
+        return make_response(jsonify({"message": "could not verify"}), 401)
+
+    token = jwt.encode({"role": "admin", "id": admin.id, "exp": datetime.utcnow() + timedelta(hours=12)}, SECRET_KEY)
+
+    return jsonify({"message": "successfully logged in", "token": token})
+
+
+@app.route("/rest/admin/clients", methods=["GET"])
+@token_required
+def rest_admin_clients(rest_user):
+
+    if not isinstance(rest_user, AdminModel):
+        return make_response(jsonify({"message": "no admin access"}), 401)
+
+    data = ClientModel.select()
+    result = list()
+    for item in data:
+        result.append({
+            "id": item.id,
+            "name": item.name,
+            "email": item.email,
+            "password": item.password,
+            "is_private": item.is_private
+        })
+
+    return jsonify(result)
