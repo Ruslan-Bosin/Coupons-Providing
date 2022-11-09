@@ -7,4 +7,4 @@ DEBUG = True
 SECRET_KEY = "s!0rXLAH*@fGCPyv8p8##!!!!!!"
 
 # База данных
-DATABASE = "data.db"
+SERVICE_DATABASE = "service.db"

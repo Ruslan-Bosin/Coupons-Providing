@@ -1,11 +1,11 @@
 from peewee import Model
 from peewee import AutoField, CharField, BooleanField, IntegerField, BlobField, ForeignKeyField, DateField, FixedCharField
-from app import db
+from app import service_db
 
 
 class BaseModel(Model):
     class Meta:
-        database = db
+        database = service_db
 
 
 class ClientModel(BaseModel):
@@ -53,5 +53,5 @@ class RecordModel(BaseModel):
 
 
 def create_tables():
-    with db:
-        db.create_tables([ClientModel, OrganizationModel, RecordModel])
+    with service_db:
+        service_db.create_tables([ClientModel, OrganizationModel, RecordModel])

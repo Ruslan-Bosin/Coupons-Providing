@@ -493,8 +493,6 @@ def organization():
         if client_exists:
             record_exists = RecordModel.get_or_none((RecordModel.client == id) & (RecordModel.organization == current_user._user.id))
 
-            print(record_exists.to_dict() if record_exists else f"record_exists is {record_exists}")
-
             if record_exists:
                 record_exists.accumulated += 1
                 record_exists.last_record_date = date.today()

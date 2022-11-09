@@ -2,7 +2,7 @@ from flask import Flask, render_template
 from loguru import logger
 from peewee import SqliteDatabase
 from flask_login import LoginManager
-from config import LOG_NAME, LOG_ROTATION, SECRET_KEY, DATABASE
+from config import LOG_NAME, LOG_ROTATION, SECRET_KEY, SERVICE_DATABASE
 
 
 # Создание основного web приложения
@@ -18,7 +18,7 @@ logger.add(
 )
 
 # Создание базы данных
-db = SqliteDatabase(DATABASE)
+service_db = SqliteDatabase(SERVICE_DATABASE)
 
 # Настройка flask-login
 login_manager = LoginManager(app=app)
@@ -27,4 +27,5 @@ login_manager.login_message = ""
 
 # Подключение отслеживания URL
 from app import routes
+from app import rest
 from app.login import load_user
