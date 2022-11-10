@@ -18,7 +18,7 @@
 </head>
 <body onload="validator_with_error_message_checker()">
     <div class="container shadow">
-        <form class="form">
+        <form class="form" method="post">
             {{ form.hidden_tag() }}
             <h2 class="form_title">Вход</h2>
             <p class="login__title">Вход в аккаунт организации. Если у вас нет аккаунта вы можете <a class=link href='{{ organization_signup_url }}'>зарегистрироваться</a></p>
