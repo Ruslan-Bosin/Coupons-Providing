@@ -29,12 +29,12 @@
 <!--<p id="error_message" class="error_message">{{ get_flashed_messages()[0] }}</p>-->
 
     <div class="container shadow">
-        <form class="form">
+        <form class="form" method="post">
             {{ form.hidden_tag() }}
             <h2 class="form_title">Вход</h2>
             <p class="login__title">Вход в аккаунт клиента. Если у вас нет аккаунта вы можете <a class=link href="{{ client_signup_url }}">зарегистрироваться</a></p>
             <div class="input_container">
-                <label class="login__label" for="lg-em">Введите email:</label>
+                <label class="login__label">Введите email:</label>
                 <div class="line_edit_container">
                     <i class="icon email"></i>
                     {{ form.email(class="email_field input-field", type="text", placeholder="RuslanBosin28@gmail.com", onchange="validator()", onkeydown="validator()") }}
