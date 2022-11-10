@@ -13,6 +13,7 @@ function validator() {
     if (password_text.length < 8) {message = "Неверный формат пароля"}
     if (email_text.indexOf('@') == -1) {message = "Неверный формат почты"}
     // TODO: name_text validator
+    // TODO: починить отображение error message в html
 
     error_message.innerText = message;
     if (message == "Данные введены корректно") {submit_button.disabled = false;}

@@ -96,6 +96,9 @@ def client_login():
         "client_login_styles_url": url_for("static", filename="css/client_login_styles.css"),
         "client_login_script_url": url_for("static", filename="js/client_login_script.js"),
         "form": form,
+        "data_css": {
+            "url_for": url_for
+        }
     }
     return render_template("client_login.html", **data)
 
@@ -143,6 +146,9 @@ def client_signup():
         "client_signup_styles_url": url_for("static", filename="css/client_signup_styles.css"),
         "client_signup_script_url": url_for("static", filename="js/client_signup_script.js"),
         "form": form,
+        "data_css": {
+            "url_for": url_for
+        }
     }
     return render_template("client_signup.html", **data)
 
@@ -423,6 +429,9 @@ def organization_login():
         "organization_login_styles_url": url_for("static", filename="css/organization_login_styles.css"),
         "organization_login_script_url": url_for("static", filename="js/organization_login_script.js"),
         "form": form,
+        "data_css": {
+            "url_for": url_for
+        }
     }
     return render_template("organization_login.html", **data)
 
@@ -470,6 +479,9 @@ def organization_signup():
         "organization_signup_styles_url": url_for("static", filename="css/organization_signup_styles.css"),
         "organization_signup_script_url": url_for("static", filename="js/organization_signup_script.js"),
         "form": form,
+        "data_css": {
+            "url_for": url_for
+        }
     }
     return render_template("organization_signup.html", **data)
 
@@ -519,6 +531,9 @@ def organization():
         "organization_settings_url": url_for("organization_settings"),
         "form": form,
         "clients": RecordModel.select().where(RecordModel.organization == int(current_user._user.id)).order_by(RecordModel.accumulated.desc()),
+        "data_css": {
+            "url_for": url_for
+        }
     }
     return render_template("organization.html", **data)
 

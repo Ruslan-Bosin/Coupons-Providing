@@ -17,16 +17,54 @@
     </style>
 </head>
 <body onload="validator_with_error_message_checker()">
-<h1>Вход - клиент</h1>
-<a href="{{ select_role_url }}">К выбору</a>
-<a href="{{ client_signup_url }}">Регистрация</a>
-<form method="post">
-    {{ form.hidden_tag() }}
-    <label>Email: {{ form.email(class="email_field", onchange="validator()", onkeydown="validator()") }}</label>
-    <label>Password: {{ form.password(class="password_field", onchange="validator()", onkeydown="validator()") }}</label>
-    {{ form.submit(id="submit_button") }}
-</form>
-<p id="error_message" class="error_message">{{ get_flashed_messages()[0] }}</p>
+<!--<h1>Вход - клиент</h1>-->
+<!--<a href="{{ select_role_url }}">К выбору</a>-->
+<!--<a href="{{ client_signup_url }}">Регистрация</a>-->
+<!--<form method="post">-->
+<!--    {{ form.hidden_tag() }}-->
+<!--    <label>Email: {{ form.email(class="email_field", onchange="validator()", onkeydown="validator()") }}</label>-->
+<!--    <label>Password: {{ form.password(class="password_field", onchange="validator()", onkeydown="validator()") }}</label>-->
+<!--    {{ form.submit(id="submit_button") }}-->
+<!--</form>-->
+<!--<p id="error_message" class="error_message">{{ get_flashed_messages()[0] }}</p>-->
+
+    <div class="container shadow">
+        <form class="form">
+            {{ form.hidden_tag() }}
+            <h2 class="form_title">Вход</h2>
+            <p class="login__title">Вход в аккаунт клиента. Если у вас нет аккаунта вы можете <a class=link href="{{ client_signup_url }}">зарегистрироваться</a></p>
+            <div class="input_container">
+                <label class="login__label" for="lg-em">Введите email:</label>
+                <div class="line_edit_container">
+                    <i class="icon email"></i>
+                    {{ form.email(class="email_field input-field", type="text", placeholder="RuslanBosin28@gmail.com", onchange="validator()", onkeydown="validator()") }}
+<!--                    <input class="input-field" type="text" placeholder="RuslanBosin28@gmail.com">-->
+                </div>
+            </div>
+
+            <div class="input_container">
+                <label class="login__label" for="lg-em">Введите пароль:</label>
+                <div class="line_edit_container">
+                    <i class="icon password"></i>
+                    {{ form.password(class="password_field input-field", type="password", placeholder="", onchange="validator()", onkeydown="validator()") }}
+<!--                    <input class="input-field" type="password" placeholder="">-->
+                </div>
+            </div>
+
+            <span id="error_message" class="error_alert login__title error_message">{{ get_flashed_messages()[0] }}</span>
+
+            <div class="buttons_container">
+                <a href="{{ select_role_url }}" class="button number_button_2">
+                    <img class="img" src='{{ url_for("static", filename="images/arrow.png") }}' alt="arrow">
+                    <p class="button_text text_button_2">К выбору</p>
+                </a>
+                <button id="submit_button" type="submit" class="button number_button_1">
+                        <i class="button_icon"></i>
+                        <span class="button_text text_button_1">Создать</span>
+                </button>
+            </div>
+        </form>
+    </div>
 </body>
 <script defer>
     {% if data_js %}
