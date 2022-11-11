@@ -399,3 +399,20 @@ def rest_admin_clients(rest_user):
         })
 
     return jsonify(result)
+
+
+# Адрес для выяснения включен ли сервер
+@app.route("/rest/is_server_on", methods=["GET"])
+def rest_is_server_on():
+    return jsonify({"message": "server is on"})
+
+
+# Проверка админ token-а
+@app.route("/rest/admin/verify_token", methods=["GET"])
+@token_required
+def rest_admin_verify_token(rest_user):
+
+    if not isinstance(rest_user, AdminModel):
+        return make_response(jsonify({"message": "no admin access"}), 401)
+
+    return jsonify({"message": "token is valid"})
