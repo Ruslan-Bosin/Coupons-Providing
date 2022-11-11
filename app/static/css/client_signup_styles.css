@@ -322,7 +322,7 @@ a {
     vertical-align: bottom;
     align-items: flex-end;
     flex: 0 1 auto;
-    position:absolute;
+    position: absolute;
     bottom: 0;
     justify-content: space-between;
 }

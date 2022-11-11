@@ -170,6 +170,7 @@ def client() -> str:
         "client_settings_url": url_for("client_settings"),
         "active": RecordModel.select().where(RecordModel.client == int(current_user._user.id)).order_by(RecordModel.accumulated.desc()),
         "user_id": current_user._user.to_dict()["id"],
+        "str": str,
         "data_js": {
             "user_id": current_user._user.to_dict()["id"]
         }
@@ -197,7 +198,10 @@ def client_settings() -> str:
         "client_settings_change_email_url": url_for("client_settings_change_email"),
         "client_settings_change_privacy_url": url_for("client_settings_change_privacy"),
         "client_settings_change_password_url": url_for("client_settings_change_password"),
-        "user_info": current_user._user.to_dict()
+        "user_info": current_user._user.to_dict(),
+        "data_css": {
+            "url_for": url_for
+        }
     }
     return render_template("client_settings.html", **data)
 
@@ -235,6 +239,9 @@ def client_settings_change_name():
         "client_settings_change_name_script_url": url_for("static", filename="js/client_settings_change_name_script.js"),
         "form": form,
         "client_settings_url": url_for("client_settings"),
+        "data_css": {
+            "url_for": url_for
+        },
         "data_js": {
             "user_info": current_user._user.to_dict()
         }
@@ -523,6 +530,7 @@ def organization():
             return redirect(url_for("wrong_id"))
 
     data: [str, object] = {
+
         "title": "Организация",
         "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
         "organization_styles_url": url_for("static", filename="css/organization_styles.css"),
@@ -531,9 +539,11 @@ def organization():
         "organization_settings_url": url_for("organization_settings"),
         "form": form,
         "clients": RecordModel.select().where(RecordModel.organization == int(current_user._user.id)).order_by(RecordModel.accumulated.desc()),
+        "str": str,
         "data_css": {
-            "url_for": url_for
-        }
+            "url_for": url_for,
+        },
+        "user_info": current_user._user.to_dict()
     }
     return render_template("organization.html", **data)
 
@@ -604,7 +614,10 @@ def organization_settings() -> str:
         "organization_settings_change_email_url": url_for("organization_settings_change_email"),
         "organization_settings_change_password_url": url_for("organization_settings_change_password"),
         "organization_settings_change_sticker_url": url_for("organization_settings_change_sticker"),
-        "user_info": current_user._user.to_dict()
+        "user_info": current_user._user.to_dict(),
+        "data_css": {
+            "url_for": url_for
+        }
     }
 
     return render_template("organization_settings.html", **data)
