@@ -17,11 +17,24 @@
     </style>
 </head>
 <body onload="select_current()">
-<p>
+    <div class="container shadow">
+        <div class="wrapper">
+            <h1>Приватность</h1>
+            <div class="buttons_container">
+                <a href="{{ client_settings_change_privacy_to_standard_url }" id="standard" class="button number_button_2 choise_button"><span class="text common_buttons_text">Стандартный</span></a>
+                <a href="{{ client_settings_change_privacy_to_private_url }}" id="private" class="button number_button_2 choise_button"><span class="text common_buttons_text">Приватный</span></a>
+            </div>
+            <a href="{{ client_settings_url }}" class="button number_button_2 back_button">
+                <img src='{{ url_for("static", filename="images/arrow.svg") }}' alt="arrow">
+                <span class="text common_buttons_text">Назад</span>
+            </a>
+        </div>
+    </div>
+<!--<p>
     <a id="standard" href="{{ client_settings_change_privacy_to_standard_url }}">Стандартный</a>
     <a id="private" href="{{ client_settings_change_privacy_to_private_url }}">Приватный</a>
 </p>
-<a href="{{ client_settings_url }}">назад</a>
+<a href="{{ client_settings_url }}">назад</a>-->
 </body>
 <script defer>
     {% if data_js %}

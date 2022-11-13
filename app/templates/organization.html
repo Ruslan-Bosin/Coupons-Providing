@@ -22,7 +22,7 @@
         <div class="organization_container">
             <h1 class="text headerlvl1">Организация</h1>
             <div class="organization_box shadow">
-                <img class="organization_image" src="imgs/organization.png" alt="qr">
+                <img class="organization_image" src="{{ url_for('organization_picture_get', id=user_info['id']) }}" alt="qr">
                 <div class="organization_text_container">
                     <h1 class="headerlvl2" id="organization_title">{{ organization_title }}</h1>
                     <p class="text advice">Попросите клиента назвать код и введите его</p>
@@ -31,8 +31,8 @@
                         <div class="form_container">
                             {{ form.id(class="id_field code_input", type="text", placeholder="код") }}
 <!--                            <input type="text" placeholder="код" class="code_input">-->
-                            <button type="submit" class="submit">
-                                <img src="imgs/arrow.png" alt="">
+                            <button id="submit_button" type="submit" class="submit">
+                                <img src='{{ url_for("static", filename="images/long_arrow.png") }}' alt="">
                             </button>
                         </div>
                     </form>
@@ -42,38 +42,31 @@
         <div class="clients_container">
             <div class="first_line">
                 <h1 class="text headerlvl1">Клиенты</h1>
-                <a href="" class="settings">
-                    <img class="settings_icon" src="imgs/settings_icon.png" alt="settings">
+                <a href='{{ organization_settings_url }}' class="settings">
+                    <img class="settings_icon" src='{{ url_for("static", filename="images/settings_icon.png") }}' alt="settings">
                 </a>
             </div>
             <div class="clients">
-                <div class="client_container shadow">
-                    <div class="progress_plus_title_container">
-                        <h2 class="text headerlvl2">Name</h2>
+                {% for elem in clients %}
+                    <div class="client_container shadow">
+                        <div class="progress_plus_title_container">
+                            <h2 class="text headerlvl2">{{ elem.client.name if elem.client.is_private == False else "Имя скрыто" }}</h2>
 
-                        <div class="progress_main">
-                            <div class="progress">
-
+                            <div class="progress_main">
+                                <div class="progress" style="
+                                                        position:absolute;
+                                                        height: 100%;
+                                                        width: {{str(elem.accumulated  / elem.organization.limit * 100) + '%'}};
+                                                        background: #007AFF;
+                                                        border-radius: 5px;
+                                                        ">
+                                </div>
                             </div>
+
                         </div>
-
+                        <div class="button counter"><span class="text paragraph">{{ elem.accumulated }} из {{ elem.organization.limit }}</span></div>
                     </div>
-                    <div class="button counter"><span class="text paragraph">3 из 4</span></div>
-                </div>
-
-                <div class="client_container shadow">
-                    <div class="progress_plus_title_container">
-                        <h2 class="text headerlvl2">Name</h2>
-
-                        <div class="progress_main">
-                            <div class="progress">
-
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="button counter"><span class="text paragraph">3 из 4</span></div>
-                </div>
+                {% endfor %}
 
 
 

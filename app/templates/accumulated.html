@@ -24,7 +24,21 @@
     </script>
 </head>
 <body>
-<h1>Накоплено!</h1>
-<a href="{{ organization_main_url }}">Назад</a>
+    <div class="main_container">
+        <div class="shadow container">
+            <img class="medal" src='{{ url_for("static", filename="images/medal.svg") }}' alt="medal">
+            <div>
+                <h1 class="text header">Накоплено!</h1>
+                <p class="text paragraph">Время получать заслуженную награду!</p>
+                <a href='{{ organization_main_url }}' class="button number_button_1">
+                    <img class="img" src='{{ url_for("static", filename="images/mark.svg") }}' alt="mark">
+                    <p class="text button_text text_button_1">Готово</p>
+                </a>
+            </div>
+        </div>
+    </div>
+
+<!--<h1>Накоплено!</h1>-->
+<!--<a href="{{ organization_main_url }}">Назад</a>-->
 </body>
 </html>

@@ -400,6 +400,72 @@ def rest_admin_clients(rest_user):
 
     return jsonify(result)
 
+@app.route("/rest/admin/organizations", methods=["GET"])
+@token_required
+def rest_admin_organizations(rest_user):
+
+    if not isinstance(rest_user, AdminModel):
+        return make_response(jsonify({"message": "no admin access"}), 401)
+
+    data = OrganizationModel.select()
+    result = list()
+    for item in data:
+        result.append({
+            "id": item.id,
+            "title": item.title,
+            "email": item.email,
+            "password": item.password,
+            "limit": item.limit,
+            "image": url_for('organization_picture_get', id=item.id),
+            "sticker": item.sticker
+        })
+
+
+
+
+    return jsonify(result)
+
+@app.route("/rest/admin/records", methods=["GET"])
+@token_required
+def rest_admin_records(rest_user):
+
+    if not isinstance(rest_user, AdminModel):
+        return make_response(jsonify({"message": "no admin access"}), 401)
+
+    data = RecordModel.select()
+    result = list()
+    for item in data:
+        result.append({
+            "id": item.id,
+            "client": item.client.id,
+            "client_name": item.client.name,
+            "organization": item.organization.id,
+            "organization_title": item.organization.title,
+            "accumulated": item.accumulated,
+            "last_record_date": item.last_record_date
+            })
+
+    return jsonify(result)
+
+
+@app.route("/rest/admin/info", methods=["GET"])
+@token_required
+def rest_admin_info(rest_user):
+
+    if not isinstance(rest_user, AdminModel):
+        return make_response(jsonify({"message": "no admin access"}), 401)
+
+    data = AdminModel.select()
+    result = list()
+    for item in data:
+        result.append({
+            "id": item.id,
+            "email": item.email,
+            "password": item.password,
+            "can_edit": item.can_edit
+            })
+
+    return jsonify(result)
 
 # Адрес для выяснения включен ли сервер
 @app.route("/rest/is_server_on", methods=["GET"])
