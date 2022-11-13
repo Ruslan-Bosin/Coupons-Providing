@@ -416,7 +416,7 @@ def rest_admin_organizations(rest_user):
             "email": item.email,
             "password": item.password,
             "limit": item.limit,
-            "image": url_for('organization_picture_get', id=item.id),
+            "image": url_for('organization_picture_get', id=item.id) if item.image else None, #url_for('organization_picture_get', id=rest_user.id) if rest_user.image else None
             "sticker": item.sticker
         })
 
