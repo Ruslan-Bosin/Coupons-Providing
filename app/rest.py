@@ -400,6 +400,7 @@ def rest_admin_clients(rest_user):
 
     return jsonify(result)
 
+
 @app.route("/rest/admin/organizations", methods=["GET"])
 @token_required
 def rest_admin_organizations(rest_user):
@@ -420,10 +421,8 @@ def rest_admin_organizations(rest_user):
             "sticker": item.sticker
         })
 
-
-
-
     return jsonify(result)
+
 
 @app.route("/rest/admin/records", methods=["GET"])
 @token_required
@@ -455,17 +454,15 @@ def rest_admin_info(rest_user):
     if not isinstance(rest_user, AdminModel):
         return make_response(jsonify({"message": "no admin access"}), 401)
 
-    data = AdminModel.select()
-    result = list()
-    for item in data:
-        result.append({
-            "id": item.id,
-            "email": item.email,
-            "password": item.password,
-            "can_edit": item.can_edit
-            })
+    result = {
+        "id": rest_user.id,
+        "email": rest_user.email,
+        "password": rest_user.password,
+        "can_edit": rest_user.can_edit
+    }
 
     return jsonify(result)
+
 
 # Адрес для выяснения включен ли сервер
 @app.route("/rest/is_server_on", methods=["GET"])
