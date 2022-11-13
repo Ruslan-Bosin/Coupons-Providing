@@ -17,13 +17,49 @@
     </style>
 </head>
 <body onload="validator_with_error_message_checker()">
-<form method="post">
-    {{ form.hidden_tag() }}
-    <label>Email: {{ form.email(class="email_field", onchange="validator()", onkeydown="validator()") }}</label>
-    {{ form.submit(id="submit_button") }}
-</form>
-<p id="error_message" class="error_message">{{ get_flashed_messages()[0] }}</p>
-<a href="{{ organization_settings_url }}">назад</a>
+        <div class="container">
+            <div class="form_wrapper">
+                <div class="preform">
+                    <h1 class="form_title">Email</h1>
+                    <!-- <img src="Images/avatar.png" alt="avatar" class="organization_avatar"> -->
+                </div>
+                <form action="" method="post">
+                    {{ form.hidden_tag() }}
+                    <div class="inputs_wrapper">
+                        <div class="input_container">
+                            <label class="login__label">Email:</label>
+                            <div class="line_edit_container">
+                                <i class="icon email"></i>
+                                            {{ form.email(class="email_field input-field", type="email", onchange="validator()", onkeydown="validator()") }}
+<!--                                        <input class="input-field" type="text" placeholder="" name="usrnm" value="">-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="buttons_container">
+                        <a href="{{ organization_settings_url }}" class="button number_button_2">
+                            <img src='{{ url_for("static", filename="images/arrow.svg") }}' alt="arrow">
+                            <span class="button_text text_button_2">Назад</span>
+                        </a>
+                        <button id="submit_button" type="submit" class="button number_button_1">
+                            <img src='{{ url_for("static", filename="images/mark.svg") }}' alt="log_out">
+                            <span class="button_text text_button_1">Сохранить</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+        <div class="end">
+            <span id="error_message" class="alert error_message">{{ get_flashed_messages()[0] }}</span>
+        </div>
+<!--<form method="post">-->
+<!--    {{ form.hidden_tag() }}-->
+<!--    <label>Email: {{ form.email(class="email_field", onchange="validator()", onkeydown="validator()") }}</label>-->
+<!--    {{ form.submit(id="submit_button") }}-->
+<!--</form>-->
+<!--<p id="error_message" class="error_message">{{ get_flashed_messages()[0] }}</p>-->
+<!--<a href="{{ organization_settings_url }}">назад</a>-->
 </body>
 <script defer>
     {% if data_js %}
