@@ -433,13 +433,20 @@ def rest_admin_records(rest_user):
 
     data = RecordModel.select()
     result = list()
+
     for item in data:
+        client_id = item.client_id
+        organization_id = item.organization_id
+
+        name = ClientModel.get_or_none(ClientModel.id == client_id)
+        title = OrganizationModel.get_or_none(OrganizationModel.id == organization_id)
+
         result.append({
             "id": item.id,
-            "client": item.client.id,
-            "client_name": item.client.name,
-            "organization": item.organization.id,
-            "organization_title": item.organization.title,
+            "client": client_id,
+            "client_name": name.name if name else "удалено",
+            "organization": organization_id,
+            "organization_title": title.title if title else "удалено",
             "accumulated": item.accumulated,
             "last_record_date": item.last_record_date
             })
@@ -464,10 +471,255 @@ def rest_admin_info(rest_user):
     return jsonify(result)
 
 
-# Адрес для выяснения включен ли сервер
-@app.route("/rest/is_server_on", methods=["GET"])
-def rest_is_server_on():
-    return jsonify({"message": "server is on"})
+# Создание записи
+@app.route("/rest/admin/create/record", methods=["POST"])
+@token_required
+def rest_admin_create_record(rest_user):
+
+    if not isinstance(rest_user, AdminModel):
+        return make_response(jsonify({"message": "no admin access"}), 401)
+
+    data: dict = request.get_json()
+    client_id: str = data.get("client_id")
+    organization_id: str = data.get("organization_id")
+
+    if not client_id or not organization_id:
+        return make_response(jsonify({"message": "arguments missing"}), 400)
+
+    client_exists = ClientModel.get_or_none(ClientModel.id == int(client_id))
+    organization_exists = OrganizationModel.get_or_none(OrganizationModel.id == int(organization_id))
+
+    if not client_exists or not organization_exists:
+        return make_response(jsonify({"message": "bad arguments"}), 400)
+
+    record_exists = RecordModel.get_or_none((RecordModel.client == int(client_id)) & (RecordModel.organization == int(organization_id)))
+    if record_exists:
+        return make_response(jsonify({"message": "record exists"}), 400)
+
+    RecordModel(client=int(client_id), organization=int(organization_id), last_record_date=date.today()).save()
+
+    return jsonify({"message": "record created"})
+
+
+@app.route("/rest/admin/clients/update", methods=["PUT"])
+@token_required
+def rest_admin_clients_update(rest_user):
+
+    if not isinstance(rest_user, AdminModel):
+        return make_response(jsonify({"message": "no admin access"}), 401)
+
+    data: dict = request.get_json()
+    client_id: str = data.get("id")
+    name: str = data.get("name")
+    email: str = data.get("email")
+    password: str = data.get("password")
+    is_private: bool = data.get("is_private")
+
+    if not client_id:
+        return make_response(jsonify({"message": "arguments missing"}), 400)
+
+    changed = list()
+    if name is not None:
+        if name_validator(name) is None:
+            client = ClientModel.get_or_none(ClientModel.id == client_id)
+            client.name = name
+            client.save()
+            changed.append("name")
+        else:
+            return make_response(jsonify({"message": f"name is not valid - {name_validator(name)}"}), 417)
+    if email is not None:
+        if email_validator(email) is None:
+            client = ClientModel.get_or_none(ClientModel.id == client_id)
+            client.email = email
+            client.save()
+            changed.append("email")
+        else:
+            return make_response(jsonify({"message": f"email is not valid - {email_validator(email)}"}), 417)
+    if password is not None:
+        if password_validator(password) is None:
+            client = ClientModel.get_or_none(ClientModel.id == client_id)
+            client.password = generate_password_hash(password)
+            client.save()
+            changed.append("password")
+        else:
+            return make_response(jsonify({"message": f"password is not valid - {password_validator(password)}"}), 417)
+    if is_private is not None:
+        client = ClientModel.get_or_none(ClientModel.id == client_id)
+        client.is_private = is_private
+        client.save()
+        changed.append("is_private")
+
+    if changed:
+        return jsonify({"message": f"{', '.join(changed)} updated"})
+
+    return make_response(jsonify({"message": "nothing updated"}), 417)
+
+
+@app.route("/rest/admin/clients/remove", methods=["POST"])
+@token_required
+def rest_admin_clients_remove(rest_user):
+
+    if not isinstance(rest_user, AdminModel):
+        return make_response(jsonify({"message": "no admin access"}), 401)
+
+    data: dict = request.get_json()
+    client_id: str = data.get("id")
+
+    if not client_id:
+        return make_response(jsonify({"message": "arguments missing"}), 400)
+
+    client_exists = ClientModel.get_or_none(ClientModel.id == client_id)
+    if not client_exists:
+        return make_response(jsonify({"message": "no such client"}), 400)
+    client_exists.delete_instance()
+
+    return jsonify({"message": "client removed"})
+
+
+@app.route("/rest/admin/organizations/update", methods=["PUT"])
+@token_required
+def rest_admin_organizations_update(rest_user):
+
+    if not isinstance(rest_user, AdminModel):
+        return make_response(jsonify({"message": "no admin access"}), 401)
+
+    data: dict = request.get_json()
+    organization_id: str = data.get("id")
+    title: str = data.get("title")
+    email: str = data.get("email")
+    password: str = data.get("password")
+    sticker: str = data.get("sticker")
+    limit: int = data.get("limit")
+
+    if not organization_id:
+        return make_response(jsonify({"message": "arguments missing"}), 400)
+
+    changed = list()
+    if title is not None:
+        if title_validator(title) is None:
+            organization = OrganizationModel.get_or_none(OrganizationModel.id == organization_id)
+            organization.title = title
+            organization.save()
+            changed.append("title")
+        else:
+            return make_response(jsonify({"message": f"title is not valid - {title_validator(title)}"}), 417)
+    if email is not None:
+        if email_validator(email) is None:
+            # TODO: проверка на уникальность email-а
+            organization = OrganizationModel.get_or_none(OrganizationModel.id == organization_id)
+            organization.email = email
+            organization.save()
+            changed.append("email")
+        else:
+            return make_response(jsonify({"message": f"email is not valid - {email_validator(email)}"}), 417)
+    if password is not None:
+        if password_validator(password) is None:
+            organization = OrganizationModel.get_or_none(OrganizationModel.id == organization_id)
+            organization.password = generate_password_hash(password)
+            organization.save()
+            changed.append("password")
+        else:
+            return make_response(jsonify({"message": f"password is not valid - {password_validator(password)}"}), 417)
+    if sticker is not None:
+        if sticker_validator(sticker) is None:
+            organization = OrganizationModel.get_or_none(OrganizationModel.id == organization_id)
+            organization.sticker = sticker
+            organization.save()
+            changed.append("sticker")
+        else:
+            return make_response(jsonify({"message": f"sticker is not valid - {sticker_validator(sticker)}"}), 417)
+    if limit is not None:
+        if limit_validator(limit) is None:
+            organization = OrganizationModel.get_or_none(OrganizationModel.id == organization_id)
+            organization.limit = limit
+            organization.save()
+            changed.append("limit")
+        else:
+            return make_response(jsonify({"message": f"limit is not valid - {limit_validator(limit)}"}), 417)
+
+    if changed:
+        return jsonify({"message": f"{', '.join(changed)} updated"})
+
+    return make_response(jsonify({"message": "nothing updated"}), 417)
+
+
+@app.route("/rest/admin/organizations/remove", methods=["POST"])
+@token_required
+def rest_admin_organizations_remove(rest_user):
+
+    if not isinstance(rest_user, AdminModel):
+        return make_response(jsonify({"message": "no admin access"}), 401)
+
+    data: dict = request.get_json()
+    organization_id: str = data.get("id")
+
+    if not organization_id:
+        return make_response(jsonify({"message": "arguments missing"}), 400)
+
+    organization_exists = OrganizationModel.get_or_none(OrganizationModel.id == organization_id)
+    if not organization_exists:
+        return make_response(jsonify({"message": "no such client"}), 400)
+    organization_exists.delete_instance()
+
+    return jsonify({"message": "organization removed"})
+
+
+@app.route("/rest/admin/records/update", methods=["PUT"])
+@token_required
+def rest_admin_records_update(rest_user):
+
+    if not isinstance(rest_user, AdminModel):
+        return make_response(jsonify({"message": "no admin access"}), 401)
+
+    data: dict = request.get_json()
+    record_id: str = data.get("id")
+    accumulated: int = data.get("accumulated")
+    last_record_date: str = data.get("last_record_date")
+
+    if not record_id:
+        return make_response(jsonify({"message": "arguments missing"}), 400)
+
+    changed = list()
+    if accumulated is not None:
+        record = RecordModel.get_or_none(RecordModel.id == record_id)
+        record.accumulated = accumulated
+        record.save()
+        changed.append("accumulated")
+    if last_record_date is not None:
+        try:
+            day, month, year = map(int, last_record_date.split("."))
+            record = RecordModel.get_or_none(RecordModel.id == record_id)
+            record.last_record_date = date(year=year, month=month, day=day)
+            record.save()
+            changed.append("last_record_date")
+        except:
+            return make_response(jsonify({"message": "bad date arguments"}), 400)
+
+    if changed:
+        return jsonify({"message": f"{', '.join(changed)} updated"})
+
+    return make_response(jsonify({"message": "nothing updated"}), 417)
+
+
+@app.route("/rest/admin/records/remove", methods=["POST"])
+@token_required
+def rest_admin_records_remove(rest_user):
+
+    if not isinstance(rest_user, AdminModel):
+        return make_response(jsonify({"message": "no admin access"}), 401)
+
+    data: dict = request.get_json()
+    record_id: str = data.get("id")
+
+    if not record_id:
+        return make_response(jsonify({"message": "arguments missing"}), 400)
+
+    record_exists = RecordModel.get_or_none(RecordModel.id == record_id)
+    if not record_exists:
+        return make_response(jsonify({"message": "no such record"}), 400)
+    record_exists.delete_instance()
+
+    return jsonify({"message": "record removed"})
 
 
 # Проверка админ token-а
@@ -479,3 +731,9 @@ def rest_admin_verify_token(rest_user):
         return make_response(jsonify({"message": "no admin access"}), 401)
 
     return jsonify({"message": "token is valid"})
+
+
+# Адрес для выяснения включен ли сервер
+@app.route("/rest/is_server_on", methods=["GET"])
+def rest_is_server_on():
+    return jsonify({"message": "server is on"})
