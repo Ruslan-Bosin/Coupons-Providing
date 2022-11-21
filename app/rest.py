@@ -7,6 +7,7 @@ from flask import request, jsonify, make_response, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from datetime import datetime, timedelta, date
+from uuid import uuid4
 
 
 # Клиент
@@ -59,7 +60,25 @@ def rest_client_signup():
             message = name_validator(name)
         return make_response(jsonify({"message": message}), 417)
 
-    return jsonify({"message": "account created"})
+    token = jwt.encode({"role": "client", "id": client_account.id, "exp": datetime.utcnow() + timedelta(days=30)}, SECRET_KEY)
+
+    return jsonify({"message": "account created", "token": token})
+
+
+@app.route("/rest/client/quick_signup", methods=["GET"])
+def rest_client_quick_signup():
+
+    client_account = ClientModel(
+        name="temp user",
+        email=f"{uuid4()}@temp-user.coms",
+        password=generate_password_hash("password"),
+        is_private=True
+    )
+    client_account.save()
+
+    token = jwt.encode({"role": "client", "id": client_account.id, "exp": datetime.utcnow() + timedelta(days=30)}, SECRET_KEY)
+
+    return jsonify({"message": "successfully quick logged in", "token": token})
 
 
 @app.route("/rest/client/active", methods=["GET"])
@@ -195,7 +214,9 @@ def rest_organization_signup():
             message = title_validator(title)
         return make_response(jsonify({"message": message}), 417)
 
-    return jsonify({"message": "account created"})
+    token = jwt.encode({"role": "organization", "id": organization_account.id, "exp": datetime.utcnow() + timedelta(days=30)}, SECRET_KEY)
+
+    return jsonify({"message": "account created", "token": token})
 
 
 @app.route("/rest/organization/clients", methods=["GET"])
