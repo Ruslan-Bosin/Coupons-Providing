@@ -61,6 +61,15 @@
                         </div>
                     </div>
 
+                    <div class="input_container">
+                        <label class="login__label">Лимит:</label>
+                        <div class="line_edit_container">
+                            <a href='{{ organization_settings_change_limit_url }}' class="change_fill"><i class="icon long_arrow"></i></a>
+                            <i class="icon"></i>
+                                    <input value='{{ user_info["limit"] }}' class="input-field" type="text" placeholder="" name="usrnm">
+                        </div>
+                    </div>
+
                 </div>
             </form>
         </div>

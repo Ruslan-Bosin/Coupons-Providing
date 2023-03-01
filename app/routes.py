@@ -1,7 +1,7 @@
 from app import app, logger
 from flask import render_template, url_for, flash, redirect, abort, make_response, request
-from app.forms import ClientLoginForm, ClientSignupForm, OrganizationLoginForm, OrganizationSignupForm, NewRecordForm, ClientChangeName, ClientChangeEmail, ClientChangePassword, OrganizationChangeName, OrganizationChangeEmail, OrganizationChangePassword, OrganizationChangeSticker
-from app.utils.validators import name_validator, email_validator, password_validator, password_confirmation_validator, title_validator, sticker_validator, image_validator
+from app.forms import ClientLoginForm, ClientSignupForm, OrganizationLoginForm, OrganizationSignupForm, NewRecordForm, ClientChangeName, ClientChangeEmail, ClientChangePassword, OrganizationChangeName, OrganizationChangeEmail, OrganizationChangePassword, OrganizationChangeSticker, OrganizationChangeLimit
+from app.utils.validators import name_validator, email_validator, password_validator, password_confirmation_validator, title_validator, sticker_validator, image_validator, limit_validator
 from app.models import ClientModel, OrganizationModel, RecordModel
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import date
@@ -111,8 +111,8 @@ def client_signup():
     form = ClientSignupForm()
 
     if form.validate_on_submit():
-        name = form.name.data
-        email = form.email.data
+        name = (form.name.data).capitalize()
+        email = (form.email.data).lower()
         password = form.password.data
         password_confirmation = form.password_confirmation.data
 
@@ -161,14 +161,13 @@ def client() -> str:
 
     if current_user.is_organization():
         abort(401)
-
     data: [str, object] = {
         "title": "Клиент",
         "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
         "client_styles_url": url_for("static", filename="css/client_styles.css"),
         "client_script_url": url_for("static", filename="js/client_script.js"),
         "client_settings_url": url_for("client_settings"),
-        "active": RecordModel.select().where(RecordModel.client == int(current_user._user.id)).order_by(RecordModel.accumulated.desc()),
+        "active": sorted(RecordModel.select().where(RecordModel.client == int(current_user._user.id)).order_by((RecordModel.accumulated)), key=lambda item: item.accumulated / OrganizationModel.select().where(OrganizationModel.id == item.organization)[0].limit, reverse=True),
         "user_id": current_user._user.to_dict()["id"],
         "str": str,
         "data_js": {
@@ -285,6 +284,9 @@ def client_settings_change_email():
         "client_settings_url": url_for("client_settings"),
         "data_js": {
             "user_info": current_user._user.to_dict()
+        },
+        "data_css": {
+            "url_for": url_for
         }
     }
 
@@ -324,6 +326,9 @@ def client_settings_change_password():
         "client_settings_change_password_script_url": url_for("static", filename="js/client_settings_change_password_script.js"),
         "form": form,
         "client_settings_url": url_for("client_settings"),
+        "data_css": {
+            "url_for": url_for
+        }
     }
 
     return render_template("client_settings_change_password.html", **data)
@@ -450,8 +455,8 @@ def organization_signup():
     form = OrganizationSignupForm()
 
     if form.validate_on_submit():
-        title = form.title.data
-        email = form.email.data
+        title = (form.title.data).capitalize()
+        email = (form.email.data).lower()
         password = form.password.data
         password_confirmation = form.password_confirmation.data
 
@@ -614,6 +619,7 @@ def organization_settings() -> str:
         "organization_settings_change_email_url": url_for("organization_settings_change_email"),
         "organization_settings_change_password_url": url_for("organization_settings_change_password"),
         "organization_settings_change_sticker_url": url_for("organization_settings_change_sticker"),
+        "organization_settings_change_limit_url": url_for("organization_settings_change_limit"),
         "user_info": current_user._user.to_dict(),
         "data_css": {
             "url_for": url_for
@@ -735,11 +741,57 @@ def organization_settings_change_name():
         "organization_settings_url": url_for("organization_settings"),
         "data_js": {
             "user_info": current_user._user.to_dict()
+        },
+        "data_css": {
+            "url_for": url_for
         }
     }
 
     return render_template("organization_settings_change_name.html", **data)
 
+
+# Основные настройки - организация, изменение лимита
+@logger.catch
+@app.route("/organization/settings/change_limit", methods=["POST", "GET"])
+@login_required
+def organization_settings_change_limit():
+
+    if current_user.is_client():
+        abort(401)
+
+    form = OrganizationChangeLimit()
+
+    if form.validate_on_submit():
+        limit = form.limit.data
+
+        if limit_validator(limit) is None:
+            organization_account = OrganizationModel.get(OrganizationModel.id == current_user._user.id)
+            organization_account.limit = limit
+            organization_account.save()
+            current_user._user.limit = limit
+            return redirect(url_for("organization_settings"))
+        else:
+            flash_message = str()
+            if limit_validator(limit):
+                flash_message = limit_validator(limit)
+            flash(flash_message)
+
+    data: [str, object] = {
+        "title": "Изменить лимит",
+        "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
+        "organization_settings_change_limit_styles_url": url_for("static", filename="css/organization_settings_change_limit_styles.css"),
+        "organization_settings_change_limit_script_url": url_for("static", filename="js/organization_settings_change_limit_script.js"),
+        "form": form,
+        "organization_settings_url": url_for("organization_settings"),
+        "data_js": {
+            "user_info": current_user._user.to_dict()
+        },
+        "data_css": {
+            "url_for": url_for
+        }
+    }
+
+    return render_template("organization_settings_change_limit.html", **data)
 
 # Основные настройки - организация, сменя почты
 @logger.catch
@@ -776,6 +828,9 @@ def organization_settings_change_email():
         "organization_settings_url": url_for("organization_settings"),
         "data_js": {
             "user_info": current_user._user.to_dict()
+        },
+        "data_css": {
+            "url_for": url_for
         }
     }
 
@@ -815,6 +870,9 @@ def organization_settings_change_password():
         "organization_settings_change_password_script_url": url_for("static", filename="js/organization_settings_change_password_script.js"),
         "form": form,
         "organization_settings_url": url_for("organization_settings"),
+        "data_css": {
+            "url_for": url_for
+        }
     }
 
     return render_template("organization_settings_change_password.html", **data)
@@ -855,6 +913,9 @@ def organization_settings_change_sticker():
         "organization_settings_url": url_for("organization_settings"),
         "data_js": {
             "user_info": current_user._user.to_dict()
+        },
+        "data_css": {
+            "url_for": url_for
         }
     }
 

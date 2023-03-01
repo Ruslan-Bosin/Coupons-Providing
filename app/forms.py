@@ -77,3 +77,10 @@ class OrganizationChangePassword(FlaskForm):
 class OrganizationChangeSticker(FlaskForm):
     sticker = StringField("sticker")
     submit = SubmitField("save")
+
+
+
+# Формы обновления данных профиля - организация
+class OrganizationChangeLimit(FlaskForm):
+    limit = StringField("limit")
+    submit = SubmitField("save")

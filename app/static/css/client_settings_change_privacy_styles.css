@@ -54,6 +54,11 @@ body {
 .text {
     font-family: 'Montserrat';
     font-style: normal;
+    text-decoration: none;
+}
+
+a {
+  text-decoration: none;
 }
 
 .common_buttons_text {
@@ -85,6 +90,9 @@ body {
 
 }
 
+.active {
+    border-color: #007AFF;
+}
 
 
 .shadow {

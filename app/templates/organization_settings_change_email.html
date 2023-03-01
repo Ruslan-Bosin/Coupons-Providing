@@ -29,19 +29,19 @@
                         <div class="input_container">
                             <label class="login__label">Email:</label>
                             <div class="line_edit_container">
+                                <a href="" class="change_fill"><i class="icon long_arrow"></i></a>
                                 <i class="icon email"></i>
-                                            {{ form.email(class="email_field input-field", type="email", onchange="validator()", onkeydown="validator()") }}
+                                {{ form.email(class="email_field input-field", onchange="validator()", type="email", onkeydown="validator()") }}
 <!--                                        <input class="input-field" type="text" placeholder="" name="usrnm" value="">-->
                             </div>
                         </div>
-                    </div>
                     <div class="buttons_container">
                         <a href="{{ organization_settings_url }}" class="button number_button_2">
                             <img src='{{ url_for("static", filename="images/arrow.svg") }}' alt="arrow">
                             <span class="button_text text_button_2">Назад</span>
                         </a>
                         <button id="submit_button" type="submit" class="button number_button_1">
-                            <img src='{{ url_for("static", filename="images/mark.svg") }}' alt="log_out">
+                            <img src='{{ url_for("static", filename="images/mark.svg") }}' alt="mark">
                             <span class="button_text text_button_1">Сохранить</span>
                         </button>
                     </div>
@@ -51,7 +51,7 @@
         </div>
 
         <div class="end">
-            <span id="error_message" class="alert error_message">{{ get_flashed_messages()[0] }}</span>
+            <span id="error_message" class="error_message alert">{{ get_flashed_messages()[0] }}</span>
         </div>
 <!--<form method="post">-->
 <!--    {{ form.hidden_tag() }}-->

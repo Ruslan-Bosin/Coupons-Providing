@@ -1,6 +1,27 @@
 var error_message = document.getElementById("error_message");
 var submit_button = document.getElementById("submit_button");
 
+var f = true;
+var pass1 = document.getElementById("password")
+var pass2 = document.getElementById("password_confirmation")
+var long_arrow_icon = document.getElementById("long_arrow_icon")
+document.addEventListener("click", function(e) {
+//   alert(e.target.className)
+  if ((e.target.className=="change_fill") || (e.target.className=="icon long_arrow")) {
+
+    if (f == true) {
+        long_arrow_icon.style.transform = "scale(-1, 1)";
+        pass1.style.display = "none";
+        pass2.style.display = "inline-block";
+        f = false;
+    } else {
+        long_arrow_icon.style.transform = "scale(1, 1)";
+        pass1.style.display = "inline-block";
+        pass2.style.display = "none";
+        f = true;
+    }
+  }
+});
 
 function validator() {
     var title_text = document.getElementById("title").value;

@@ -126,26 +126,26 @@ body {
 }
 
 .name {
-    background: url("images/name_icon.svg");
+    background: url('{{ url_for("static", filename="images/name_icon.svg") }}');
 }
 
 .title_icon {
-    background: url("Images/organization_name_icon.svg");
+    background: url('{{ url_for("static", filename="images/organization_name_icon.svg") }}');
 }
 
 
 .password {
-    background: url("Images/password_icon.svg");
+    background: url('{{ url_for("static", filename="images/password_icon.svg") }}');
 }
 
 
 .email {
-    background: url("Images/mail_icon.svg");
+    background: url('{{ url_for("static", filename="images/mail_icon.svg") }}');
 }
 
 
 .sticker {
-    background: url("Images/smile.svg");
+    background: url('{{ url_for("static", filename="images/smile.svg") }}');
 }
 
 /* .change_fill:active {

@@ -31,7 +31,7 @@ body {
 .container {
     /* position: relative; */
     width: 400px;
-    height: 754.45px;
+    height: 820px;
     background: #FFFFFF;
     display: flex;
     flex-direction: column;
@@ -140,11 +140,11 @@ body {
 
 
 .password {
-    background: url('{{ url_for("static", filename="images/password.svg") }}');
+    background: url('{{ url_for("static", filename="images/password_icon.svg") }}');
 }
 
 .name {
-    background: url('{{ url_for("static", filename="images/name_icon.svg") }}');
+    background: url('{{ url_for("static", filename="images/organization_name_icon.svg") }}');
 }
 
 .long_arrow {

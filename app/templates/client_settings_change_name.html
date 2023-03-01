@@ -17,7 +17,7 @@
     </style>
 </head>
 <body onload="validator_with_error_message_checker()">
-    <div class="container">
+        <div class="container">
             <div class="form_wrapper">
                 <div class="preform">
                     <h1 class="form_title">Имя</h1>
@@ -31,18 +31,17 @@
                             <div class="line_edit_container">
                                 <a href="" class="change_fill"><i class="icon long_arrow"></i></a>
                                 <i class="icon name"></i>
-                                            {{ form.name(class="name_field input-field", type="text", onchange="validator()", onkeydown="validator()") }}
+                                {{ form.name(class="name_field input-field", onchange="validator()", type="text", onkeydown="validator()") }}
 <!--                                        <input class="input-field" type="text" placeholder="" name="usrnm" value="">-->
                             </div>
                         </div>
-                    </div>
                     <div class="buttons_container">
                         <a href="{{ client_settings_url }}" class="button number_button_2">
                             <img src='{{ url_for("static", filename="images/arrow.svg") }}' alt="arrow">
                             <span class="button_text text_button_2">Назад</span>
                         </a>
                         <button id="submit_button" type="submit" class="button number_button_1">
-                            <img src='{{ url_for("static", filename="images/mark.svg") }}' alt="log_out">
+                            <img src='{{ url_for("static", filename="images/mark.svg") }}' alt="mark">
                             <span class="button_text text_button_1">Сохранить</span>
                         </button>
                     </div>
@@ -52,9 +51,8 @@
         </div>
 
         <div class="end">
-            <span id="error_message" class="alert error_message">{{ get_flashed_messages()[0] }}</span>
+            <span id="error_message" class="error_message alert">{{ get_flashed_messages()[0] }}</span>
         </div>
-
 <!--<form method="post">-->
 <!--    {{ form.hidden_tag() }}-->
 <!--    <label>Name: {{ form.name(class="name_field", onchange="validator()", onkeydown="validator()") }}</label>-->

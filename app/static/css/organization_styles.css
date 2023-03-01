@@ -184,6 +184,10 @@ body {
     align-items: center;
 }
 
+.submit:hover {
+    cursor: pointer;
+}
+
 .submit_input {
     background: #D4D4D4;
     border: none;

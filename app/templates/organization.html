@@ -22,7 +22,8 @@
         <div class="organization_container">
             <h1 class="text headerlvl1">Организация</h1>
             <div class="organization_box shadow">
-                <img class="organization_image" src="{{ url_for('organization_picture_get', id=user_info['id']) }}" alt="qr">
+                <a href=""><img class="organization_image" src="{{ url_for('organization_picture_get', id=user_info['id']) }}" alt="organization_image"></a>
+<!--                <img class="organization_image" src="{{ url_for('organization_picture_get', id=user_info['id']) }}" alt="organization_image">-->
                 <div class="organization_text_container">
                     <h1 class="headerlvl2" id="organization_title">{{ organization_title }}</h1>
                     <p class="text advice">Попросите клиента назвать код и введите его</p>
@@ -31,7 +32,7 @@
                         <div class="form_container">
                             {{ form.id(class="id_field code_input", type="text", placeholder="код") }}
 <!--                            <input type="text" placeholder="код" class="code_input">-->
-                            <button id="submit_button" type="submit" class="submit">
+                            <button id="submit_button" class="submit" type="submit">
                                 <img src='{{ url_for("static", filename="images/long_arrow.png") }}' alt="">
                             </button>
                         </div>

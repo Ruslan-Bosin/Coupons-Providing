@@ -46,9 +46,13 @@
                     <div class="input_container">
                         <label class="login__label">Введите пароль:</label>
                         <div class="line_edit_container">
-                            <div class="change_fill"><i class="icon long_arrow"></i></div>
+                            <div class="change_fill"><i id="long_arrow_icon" class="icon long_arrow"></i></div>
                             <i class="icon password"></i>
-                            {{ form.password(class="input-field password_field", type="password", onchange="validator()", onkeydown="validator()") }}
+                            {{ form.password(class="password_field input-field", type="password", onchange="validator()", onkeydown="validator()") }}
+
+<!--                            <input id="pass1" class="input-field" type="password" placeholder="" name="usrnm">-->
+<!--                            <input id="pass2" class="input-field" type="password" placeholder="" name="usrnm" style="display: none;">-->
+                            {{ form.password_confirmation(class="password_confirmation_field input-field", style="display: none;", type="password", onchange="validator()", onkeydown="validator()") }}
 <!--                            <input class="input-field" type="password" placeholder="" name="usrnm">-->
                             <input class="input-field repeat_fill" type="password" placeholder="" name="usrnm">
                         </div>
