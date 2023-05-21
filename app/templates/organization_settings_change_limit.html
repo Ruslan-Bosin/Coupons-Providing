@@ -9,10 +9,10 @@
     <style>
         {% if data_css %}
         {{ ui_kit_styles_url | style(data_css) | safe }}
-        {{ client_settings_change_email_styles_url | style(data_css) | safe }}
+        {{ organization_settings_change_limit_styles_url | style(data_css) | safe }}
         {% else %}
         {{ ui_kit_styles_url | style() | safe }}
-        {{ client_settings_change_email_styles_url | style() | safe }}
+        {{ organization_settings_change_limit_styles_url | style() | safe }}
         {% endif %}
     </style>
 </head>
@@ -20,23 +20,23 @@
         <div class="container shadow">
             <div class="form_wrapper">
                 <div class="preform">
-                    <h1 class="form_title">Email</h1>
+                    <h1 class="form_title">Лимит</h1>
                     <!-- <img src="Images/avatar.png" alt="avatar" class="organization_avatar"> -->
                 </div>
                 <form action="" method="post">
                     {{ form.hidden_tag() }}
                     <div class="inputs_wrapper">
                         <div class="input_container">
-                            <label class="login__label">Email:</label>
+                            <label class="login__label">Лимит:</label>
                             <div class="line_edit_container">
                                 <a href="" class="change_fill"><i class="icon long_arrow"></i></a>
-                                <i class="icon email"></i>
-                                {{ form.email(class="email_field input-field", onchange="validator()", onkeydown="validator()") }}
+                                <i class="icon limit"></i>
+                                {{ form.limit(class="limit_field input-field", onchange="validator()", onkeydown="validator()", type="text") }}
 <!--                                        <input class="input-field" type="text" placeholder="" name="usrnm" value="">-->
                             </div>
                         </div>
                     <div class="buttons_container">
-                        <a href="{{ client_settings_url }}" class="button number_button_2">
+                        <a href="{{ organization_settings_url }}" class="button number_button_2">
                             <img src='{{ url_for("static", filename="images/arrow.svg") }}' alt="arrow">
                             <span class="button_text text_button_2">Назад</span>
                         </a>
@@ -53,18 +53,12 @@
         <div class="end">
             <span id="error_message" class="error_message alert">{{ get_flashed_messages()[0] }}</span>
         </div>
-<!--    {{ form.hidden_tag() }}-->
-<!--    <label>Email: {{ form.email(class="email_field", onchange="validator()", onkeydown="validator()") }}</label>-->
-<!--    {{ form.submit(id="submit_button") }}-->
-<!--</form>-->
-<!--<p id="error_message" class="error_message">{{ get_flashed_messages()[0] }}</p>-->
-<!--<a href="{{ client_settings_url }}">назад</a>-->
 </body>
 <script defer>
     {% if data_js %}
-    {{ client_settings_change_email_script_url | script(data_js) | safe }}
+    {{ organization_settings_change_limit_script_url | script(data_js) | safe }}
     {% else %}
-    {{ client_settings_change_email_script_url | script() | safe }}
+    {{ organization_settings_change_limit_script_url | script() | safe }}
     {% endif %}
 </script>
 </html>

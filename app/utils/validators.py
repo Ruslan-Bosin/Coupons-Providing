@@ -1,3 +1,5 @@
+from typing import Any
+
 def name_validator(name: str) -> None | str:
     if name == "aa":
         return "Введите настоящие имя"
@@ -38,8 +40,12 @@ def image_validator(path: str) -> None | str:
     return None
 
 
-def limit_validator(limit: int) -> None | str:
-    return None
+def limit_validator(limit: Any) -> None | str:
+    if type(limit) == str and limit.isdigit() and int(limit) >= 1:
+        return None
+    if type(limit) == int and limit >= 1:
+        return None
+    return "Неправильное значение лимита"
 
 
 # TODO: написать нормальные валидаторы

@@ -22,7 +22,7 @@
         <div class="organization_container">
             <h1 class="text headerlvl1">Организация</h1>
             <div class="organization_box shadow">
-                <a href=""><img class="organization_image" src="{{ url_for('organization_picture_get', id=user_info['id']) }}" alt="organization_image"></a>
+                <a href=""><img class="organization_image" src="{{ url_for('organization_picture_get', id=user_info['id']) }}" alt=" "></a>
 <!--                <img class="organization_image" src="{{ url_for('organization_picture_get', id=user_info['id']) }}" alt="organization_image">-->
                 <div class="organization_text_container">
                     <h1 class="headerlvl2" id="organization_title">{{ organization_title }}</h1>
@@ -30,7 +30,7 @@
                     <form action="" method="post">
                         {{ form.hidden_tag() }}
                         <div class="form_container">
-                            {{ form.id(class="id_field code_input", type="text", placeholder="код") }}
+                            {{ form.id(class="id_field code_input", type="text", placeholder="код", onkeyup="change_button_color()") }}
 <!--                            <input type="text" placeholder="код" class="code_input">-->
                             <button id="submit_button" class="submit" type="submit">
                                 <img src='{{ url_for("static", filename="images/long_arrow.png") }}' alt="">
@@ -57,7 +57,8 @@
                                 <div class="progress" style="
                                                         position:absolute;
                                                         height: 100%;
-                                                        width: {{str(elem.accumulated  / elem.organization.limit * 100) + '%'}};
+                                                        max-width: 100%;
+                                                        width: {{str(elem.accumulated / elem.organization.limit * 100) + '%'}};
                                                         background: #007AFF;
                                                         border-radius: 5px;
                                                         ">
@@ -74,19 +75,7 @@
             </div>
         </div>
     </div>
-<!--
-<h1>Организация</h1>
-<p>{{ organization_title }}</p>
-<form method="post">
-    {{ form.hidden_tag() }}
-    <label>id: {{ form.id(class="id_field") }}</label>
-    {{ form.submit(id="submit_button") }}
-</form>
-<a href="{{ organization_settings_url }}">настройки</a>
-{% for elem in clients %}
-<p>{{ elem.client.name if elem.client.is_private == False else "Имя скрыто" }} - {{ elem.accumulated }} из {{ elem.organization.limit }}</p>
-{% endfor %}
--->
+
 </body>
 <script defer>
     {% if data_js %}

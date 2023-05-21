@@ -17,11 +17,13 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container shadow">
         <div class="form_wrapper">
             <div class="preform">
                 <h1 class="form_title">Настройки</h1>
-                <img src="{{ url_for('organization_picture_get', id=user_info['id']) }}" alt="avatar" class="organization_avatar">
+                <a href="{{ organization_settings_change_picture_url }}">
+                    <img src="{{ url_for('organization_picture_get', id=user_info['id']) }}" alt=" " class="organization_avatar">
+                </a>
             </div>
             <form action="">
                 <div class="inputs_wrapper">
@@ -30,7 +32,7 @@
                         <div class="line_edit_container">
                             <a href="{{ organization_settings_change_name_url }}" class="change_fill"><i class="icon long_arrow"></i></a>
                             <i class="icon name"></i>
-                                    <input value='{{ user_info["title"] }}' class="input-field" type="text" placeholder="" name="usrnm">
+                                    <input readonly value='{{ user_info["title"] }}' class="input-field" type="text" placeholder="" name="usrnm">
                         </div>
                     </div>
 
@@ -39,7 +41,7 @@
                         <div class="line_edit_container">
                             <a href='{{ organization_settings_change_email_url }}' class="change_fill"><i class="icon long_arrow"></i></a>
                             <i class="icon email"></i>
-                                    <input value=' {{ user_info["email"] }} ' class="input-field" type="email" placeholder="" name="usrnm">
+                                    <input readonly value=' {{ user_info["email"] }} ' class="input-field" type="email" placeholder="" name="usrnm">
                         </div>
                     </div>
 
@@ -48,7 +50,7 @@
                         <div class="line_edit_container">
                             <a href='{{ organization_settings_change_password_url }}' class="change_fill"><i class="icon long_arrow"></i></a>
                             <i class="icon password"></i>
-                                    <input value='{{ "•••••••••••••••" }}' class="input-field" type="password" placeholder="" name="usrnm">
+                                    <input readonly value='{{ "•••••••••••••••" }}' class="input-field" type="password" placeholder="" name="usrnm">
                         </div>
                     </div>
 
@@ -57,7 +59,7 @@
                         <div class="line_edit_container">
                             <a href='{{ organization_settings_change_sticker_url }}' class="change_fill"><i class="icon long_arrow"></i></a>
                             <i class="icon smile"></i>
-                                    <input value='{{ user_info["sticker"] }}' class="input-field" type="text" placeholder="" name="usrnm">
+                                    <input readonly value='{{ user_info["sticker"] }}' class="input-field" type="text" placeholder="" name="usrnm">
                         </div>
                     </div>
 
@@ -65,8 +67,8 @@
                         <label class="login__label">Лимит:</label>
                         <div class="line_edit_container">
                             <a href='{{ organization_settings_change_limit_url }}' class="change_fill"><i class="icon long_arrow"></i></a>
-                            <i class="icon"></i>
-                                    <input value='{{ user_info["limit"] }}' class="input-field" type="text" placeholder="" name="usrnm">
+                            <i class="icon limit"></i>
+                                    <input readonly value='{{ user_info["limit"] }}' class="input-field" type="text" placeholder="" name="usrnm">
                         </div>
                     </div>
 

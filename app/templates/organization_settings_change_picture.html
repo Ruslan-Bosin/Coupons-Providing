@@ -5,6 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <title>{{ title }}</title>
     <style>
         {% if data_css %}
@@ -17,13 +18,29 @@
     </style>
 </head>
 <body>
-<img src="{{ url_for('organization_picture_get', id=user_info['id']) }}">
-<form action="{{ organization_settings_change_picture_upload_url }}" method="POST" enctype="multipart/form-data">
-    <input type="file" name="file">
-    <input type="submit" name="upload">
-</form>
-<p id="error_message" class="error_message">{{ get_flashed_messages()[0] }}</p>
-<a href="{{ organization_settings_url }}">назад</a>
+<div class="d-flex flex-column align-items-center container shadow">
+    <p class="form_title"> Ваш аватар</p>
+    <img class="organization_image" src="{{ url_for('organization_picture_get', id=user_info['id']) }}">
+    <form action="{{ organization_settings_change_picture_upload_url }}" method="POST" enctype="multipart/form-data">
+        <!--<input type="file" name="file"><br>
+        <input type="submit" name="upload">-->
+        <div class="d-flex flex-column align-items-center mb-3">
+          <label for="formFile" class="login__label form-label">Изменить аватар</label>
+          <input class="form-control" type="file" name="file" id="formFile">
+        </div>
+        <div class="buttons_container">
+            <a href="{{ organization_settings_url }}" class="button number_button_2">
+                <img src='{{ url_for("static", filename="images/arrow.svg") }}' alt="arrow">
+                <span class="button_text text_button_2">Назад</span>
+            </a>
+            <button id="submit_button" type="submit" class="button number_button_1" name="upload">
+                <img src='{{ url_for("static", filename="images/mark.svg") }}' alt="mark">
+                <span class="button_text text_button_1">Сохранить</span>
+            </button>
+        </div>
+    </form>
+    <p id="error_message" class="error_message">{{ get_flashed_messages()[0] }}</p>
+</div>
 </body>
 <script defer>
     {% if data_js %}

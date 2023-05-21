@@ -639,13 +639,16 @@ def organization_settings_change_picture() -> str:
         abort(401)
 
     data: [str, object] = {
-        "title": "Сменить имя",
+        "title": "Сменить аватар",
         "ui_kit_styles_url": url_for("static", filename="css/ui_kit_styles.css"),
         "organization_settings_change_picture_styles_url": url_for("static", filename="css/organization_settings_change_picture_styles.css"),
         "organization_settings_change_picture_script_url": url_for("static", filename="js/organization_settings_change_picture_script.js"),
         "organization_settings_change_picture_upload_url": url_for("organization_settings_change_picture_upload"),
         "organization_settings_url": url_for("organization_settings"),
-        "user_info": current_user._user.to_dict()
+        "user_info": current_user._user.to_dict(),
+        "data_css": {
+            "url_for": url_for
+        }
     }
 
     return render_template("organization_settings_change_picture.html", **data)
@@ -769,6 +772,7 @@ def organization_settings_change_limit():
             organization_account.limit = limit
             organization_account.save()
             current_user._user.limit = limit
+
             return redirect(url_for("organization_settings"))
         else:
             flash_message = str()
